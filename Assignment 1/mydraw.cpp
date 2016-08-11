@@ -18,13 +18,16 @@ int win_width = 512;
 //Window height
 int win_height = 512;
 canvas_t* canvas;
+pen_t* pen;
 int LINE_DRAWING = 0;
 int TRI_DRAWING = 2;
 int mode = 1;
+int PEN_DRAWING = 1;
 int pen_color[3] = {255, 0, 0};
 int point1[2] = {-1, -1};
 int point2[2] = {-1, -1};
 int point3[2] = {-1, -1};
+
 //Display callback
 void display( void )
 {
@@ -58,15 +61,39 @@ void keyboard( unsigned char key, int x, int y ) {
         exit(0);
         break;
     case '1': {
-        // Enter line drawing mode
-        mode = LINE_DRAWING;
+        if (mode == LINE_DRAWING) {
+            mode = PEN_DRAWING;
+        } else {
+            mode = LINE_DRAWING;
+        }
     } break;
     case '2': {
-        // Enter triangle drawing mode
-        mode = TRI_DRAWING;
+        if (mode == TRI_DRAWING) {
+            mode = PEN_DRAWING;
+        } else {
+            mode = TRI_DRAWING;
+        }
     } break;
-    case 'c': {
+    case 'c':
         canvas->clear();
+        break;
+    case 'e':
+        pen->set_pen_mode();
+        break;
+    case 'f': {
+    } break;
+    case 'h': {
+        cout << "Enter pen color" << endl;
+        // int a = 0, b = 0, c = 0;
+        //cin >> r >> g >> b;
+        color_t* color1 = new color_t(0, 0, 0);
+        pen->set_pen_color(color1);
+    } break;
+    case 'j': {
+        cout << "Enter pen size" << endl;
+        int size;
+        cin >> size;
+        pen->set_pen_size(size);
     } break;
     case 'n': {
         // Do something when 'N' is pressed
@@ -141,6 +168,19 @@ void mouse(int button, int state, int x, int y) {
                     point3[0] = -1;
                     point3[1] = -1;
                 }
+            }
+
+            else if (mode == PEN_DRAWING)
+            {
+                cout << x << ", " << y << endl;
+                    point3[0] = x;
+                    point3[1] = y;
+                    color_t* color = new color_t(pen_color[0], pen_color[1], pen_color[2]);
+                    point_t* p3 = new point_t(point3[0], point3[1], color);
+                    pen_t* pen1 = new pen_t(1, color, true);
+                    pen1->draw(canvas , p3);
+                    point3[0] = -1;
+                    point3[1] = -1;
             }
         }
     }

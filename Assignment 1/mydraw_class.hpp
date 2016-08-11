@@ -115,4 +115,34 @@ public:
 	void append(char op, string input);
 	void draw(canvas_t* canvas);
 };
+
+//pen_t class
+class pen_t {
+private:
+	int size;
+	color_t* pen_color;
+	bool mode;
+public:
+	pen_t();
+	pen_t(int _size, color_t* pc, bool _mode);
+	int get_pen_size(void);
+	color_t* get_pen_color(void);
+	bool get_pen_mode(void);
+	void set_pen_size(int size);
+	void set_pen_color(color_t* color);
+	void set_pen_mode(void);
+	void draw(canvas_t* canvas, point_t* point);
+};
+
+//fill_t class
+class fill_t {
+private:
+	point_t* input;
+	color_t* fill_color;
+public:
+	void set_fill_color(color_t* color);
+	color_t* get_fill_color(void);
+	void draw(canvas_t* canvas, point_t* point);
+};
+
 #endif

@@ -90,6 +90,7 @@ void canvas_t::clear() {
             image[i][j] = p;
         }
     }
+    drawing->clear();
 }
 
 void canvas_t::put_point(point_t* point) {
@@ -374,4 +375,72 @@ void drawing_t::draw(canvas_t* canvas) {
         }
         s1++; s2++;
     }
+}
+
+void drawing_t::clear() {
+    operations.clear();
+    inputs.clear();
+}
+
+//pen_t methods
+pen_t::pen_t() {
+    size = 1;
+    pen_color = new color_t(0,0,0);
+    mode = true;
+}
+
+pen_t::pen_t(int _size, color_t* pc, bool _mode) {
+    size = _size;
+    mode = _mode;
+    pen_color = pc;
+}
+
+int pen_t::get_pen_size() {
+    return size;
+}
+
+bool pen_t::get_pen_mode() {
+    return mode;
+}
+
+color_t* pen_t::get_pen_color() {
+    return pen_color;
+}
+
+void pen_t::set_pen_size(int size) {
+    this->size = size;
+}
+
+void pen_t::set_pen_color(color_t* color) {
+    this->pen_color = color;
+}
+
+void pen_t::set_pen_mode() {
+    if (mode == false)
+    {
+        mode = true;
+    }
+    else
+    {
+        mode = false;
+    }
+}
+
+void pen_t::draw(canvas_t* canvas, point_t* p) {
+    canvas->put_point(p);
+}
+
+
+//fill_t methods
+
+void fill_t::set_fill_color(color_t* color) {
+    this->fill_color = color;
+}
+
+color_t* fill_t::get_fill_color() {
+    return fill_color;
+}
+
+void fill_t::draw(canvas_t* canvas, point_t* point)
+{
 }
