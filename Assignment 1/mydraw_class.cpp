@@ -548,45 +548,23 @@ void fill_t::draw(canvas_t* canvas, int x, int y)
     {
         point_t* n = myqueue.front();
         myqueue.pop();
-        color_t* grey = new color_t(180, 180, 180);
-        if (compare(n->get_color(), target_color))
-        {
-            canvas->set_point_color(n->get_x(), n->get_y(), fill_color);
-            int x1 = n->get_x();
-            int y1 = n->get_y();
-            int status[canvas->get_width()][canvas->get_height()];
-            for (int i = 0; i < canvas->get_width(); i++) {
-                for (int j = 0; j < canvas->get_height(); j++) {
-                    status[i][j] = 0;
-                }
+        int west_x = n->get_x(); int west_y = n->get_y();
+        int east_x = n->get_x(); int east_y = n->get_y();
+        while(west_x > -1 && compare(canvas->get_point(west_x, west_y)->get_color(), target_color)) {
+            west_x--;
+        }
+        west_x++;
+        while(east_x < canvas->get_width()-1 && compare(canvas->get_point(east_x, east_y)->get_color(), target_color)) {
+            east_x++;
+        }
+        east_x--;
+        for (int i = west_x; i <= east_x; i++) {
+            canvas->set_point_color(i, west_y, fill_color);
+            if (west_y + 1 < canvas->get_height() && compare(canvas->get_point(i, west_y+1)->get_color(), target_color)) {
+                myqueue.push(canvas->get_point(i, west_y+1));
             }
-            status[x1][y1] = 1;
-            if (x1<510 && x1>2 && y1>2 && y1<510)
-            {
-                point_t* left = canvas->get_point(x1, y1 - 1);
-                point_t* right = canvas->get_point(x1, y1 + 1);
-                point_t* bottom = canvas->get_point(x1 - 1, y1);
-                point_t* top = canvas->get_point(x1 + 1, y1);
-                if (status[left->get_x()][left->get_y()] == 0 && compare(left->get_color(), target_color))
-                {
-                    status[left->get_x()][left->get_y()] = 1;
-                    myqueue.push(left);
-                }
-                if (status[right->get_x()][right->get_y()] == 0 && compare(right->get_color(), target_color))
-                {
-                    status[right->get_x()][right->get_y()] = 1;
-                    myqueue.push(right);
-                }
-                if (status[top->get_x()][top->get_y()] == 0 && compare(top->get_color(), target_color))
-                {
-                    status[top->get_x()][top->get_y()] = 1;
-                    myqueue.push(top);
-                }
-                if (status[bottom->get_x()][bottom->get_y()] == 0 && compare(bottom->get_color(), target_color))
-                {
-                    status[bottom->get_x()][bottom->get_y()] = 1;
-                    myqueue.push(bottom);
-                }
+            if (west_y - 1 > -1 && compare(canvas->get_point(i, west_y-1)->get_color(), target_color)) {
+                myqueue.push(canvas->get_point(i, west_y-1));
             }
         }
     }
