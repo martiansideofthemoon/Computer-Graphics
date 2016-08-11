@@ -1,11 +1,14 @@
 #ifndef _MYDRAW_CLASS_HPP_
 #define _MYDRAW_CLASS_HPP_
-
+#include <vector>
+using namespace std;
 //Define all classes like the color class, adding appropriate methods and data members. 
 //Implementation of the methods go into the corresponding cpp file
 
 //------------------------
 //color_t class
+class canvas_t;
+
 
 class color_t {
 private:
@@ -25,16 +28,31 @@ public:
 //point_t class
 class point_t {
 private:
-	float x,y;
-	color_t color;
+	int x,y;
+	color_t* color;
 public:
 	point_t();
-	float get_x(void);
-	float get_y(void);
-	float get_color(void);
-	float draw(void);
+	point_t(int _x, int _y, color_t* c);
+	int get_x(void);
+	int get_y(void);
+	color_t* get_color(void);
+	void draw(canvas_t* canvas);
 };
 
 //------------------------
+
+//canvas_t class
+class canvas_t {
+private:
+	int width;
+	int height;
+	vector< vector<point_t*> > image;
+	color_t* background;
+public:
+	canvas_t(int width, int height, color_t* background);
+	void clear(void);
+	void put_point(point_t* point);
+	void draw_grid(void);
+};
 
 #endif

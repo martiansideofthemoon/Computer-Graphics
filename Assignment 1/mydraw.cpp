@@ -1,6 +1,6 @@
 /*******************************
  *
- * CS475m Assignment 1 Basecode 
+ * CS475m Assignment 1 Basecode
  *
  * Parag Chaudhuri, 2016
  *
@@ -17,15 +17,12 @@
 int win_width = 512;
 //Window height
 int win_height = 512;
-
+canvas_t* canvas;
 
 
 //Display callback
 void display( void )
 {
-  //This clears the colorbuffer (current window)
-  glClear(GL_COLOR_BUFFER_BIT);
-
   //Flush the framebuffer to the screen
   glutSwapBuffers();
 }
@@ -49,35 +46,39 @@ void reshape( int w, int h )
 
 //Keyboard callback
 void keyboard( unsigned char key, int x, int y ) {
-  switch(key) {
-  //Exit on pressing escape
-  case 27: 
-    exit(0);
-    break;
-    //Do something when 'C' is pressed
-  case 'C':
-    break;
+    switch(key) {
+    //Exit on pressing escape
+    case 27:
+        exit(0);
+        break;
+    case 'c':
+        canvas->clear();
+        break;
+    //Do something when 'N' is pressed
+    case 'n':
+        color_t* color = new color_t(255, 0, 0);
+        canvas = new canvas_t(win_width, win_height, color);
+        break;
     //Ignore all other keypresses
-  default:
-    break;
-  }
+    }
+    glutPostRedisplay();
 }
 
 //Mouse callback
-void mouse(int button, int state, int x, int y) 
+void mouse(int button, int state, int x, int y)
 {
-   if (state == GLUT_DOWN) 
+   if (state == GLUT_DOWN)
      {
-       if (button == GLUT_LEFT_BUTTON) 
+       if (button == GLUT_LEFT_BUTTON)
 	 {
 	   //Do something when the left mouse button is clicked
 	 }
      }
    glutPostRedisplay();
-}       
+}
 
 
-int main (int argc, char *argv[]) 
+int main (int argc, char *argv[])
 {
 
   glutInit( &argc, argv );
@@ -91,6 +92,6 @@ int main (int argc, char *argv[])
   glutReshapeFunc( reshape );
   glutKeyboardFunc( keyboard );
   glutMouseFunc( mouse );
- 
+
   glutMainLoop();
 }
