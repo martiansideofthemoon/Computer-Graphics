@@ -61,7 +61,6 @@ canvas_t::canvas_t(int width, int height, color_t* background) {
         image[i].resize(width);
     }
     clear();
-    draw_grid();
 }
 
 void canvas_t::clear() {
@@ -71,11 +70,10 @@ void canvas_t::clear() {
             image[i][j] = p;
         }
     }
-    draw_grid();
 }
 
 void canvas_t::put_point(point_t* point) {
-    image[point->get_x()][point->get_y()] = point;
+    image[point->get_y()][point->get_x()] = point;
 }
 
 
@@ -94,3 +92,96 @@ void canvas_t::draw_grid() {
                  GL_UNSIGNED_BYTE, checkImage);
 }
 
+
+//line_t methods
+line_t::line_t(point_t* p1, point_t* p2, color_t* color) {
+    this->p1 = p1;
+    this->p2 = p2;
+    this->color = color;
+}
+
+point_t* line_t::get_p1() {
+    return p1;
+}
+
+point_t* line_t::get_p2() {
+    return p2;
+}
+
+color_t* line_t::get_color() {
+    return color;
+}
+
+void line_t::draw(canvas_t* canvas) {
+    int x1 = p1->get_x();
+    int x2 = p2->get_x();
+    int y1 = p1->get_y();
+    int y2 = p2->get_y();
+    if (x2 < x1) {
+        // Takes care of half the cases
+        swap(x1, x2);
+        swap(y1, y2);
+    }
+    if (abs(y1-y2) > abs(x1-x2)) {
+        // Slope is more than 1 or less than -1
+        if (y2 > y1) {
+            int x = x1;
+            int error = 0;
+            for (int y = y1; y <= y2; y += 1) {
+                point_t* p = new point_t(x, y, color);
+                p->draw(canvas);
+                error += (x2 - x1);
+                if (error*2 >= (y2 - y1)) {
+                    x += 1;
+                    error -= (y2 - y1);
+                }
+            }
+        } else {
+            int x = x1;
+            int error = 0;
+            for (int y = y1; y >= y2; y -= 1) {
+                point_t* p = new point_t(x, y, color);
+                p->draw(canvas);
+                error += (x2 - x1);
+                if (error*2 >= (y1 - y2)) {
+                    x += 1;
+                    error -= (y1 - y2);
+                }
+            }
+        }
+
+    } else {
+        // Slope is less than 1 and more than -1
+        if (y2 > y1) {
+            int y = y1;
+            int error = 0;
+            for (int x = x1; x <= x2; x += 1) {
+                point_t* p = new point_t(x, y, color);
+                p->draw(canvas);
+                error += (y2 - y1);
+                if (error*2 >= (x2 - x1)) {
+                    y += 1;
+                    error -= (x2 - x1);
+                }
+            }
+        } else {
+            int y = y1;
+            int error = 0;
+            for (int x = x1; x <= x2; x += 1) {
+                point_t* p = new point_t(x, y, color);
+                p->draw(canvas);
+                error += (y1 - y2);
+                if (error*2 >= (x2 - x1)) {
+                    y -= 1;
+                    error -= (x2 - x1);
+                }
+            }
+        }
+    }
+}
+
+void swap(int* x1, int* x2) {
+    int temp1 = *x1;
+    *x1 = *x2;
+    *x2 = temp1;
+}

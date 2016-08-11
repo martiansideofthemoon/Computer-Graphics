@@ -18,11 +18,16 @@ int win_width = 512;
 //Window height
 int win_height = 512;
 canvas_t* canvas;
-
+int LINE_DRAWING = 0;
+int mode = 1;
+int pen_color[3] = {255, 0, 0};
+int point1[2] = {-1, -1};
+int point2[2] = {-1, -1};
 
 //Display callback
 void display( void )
 {
+  canvas->draw_grid();
   //Flush the framebuffer to the screen
   glutSwapBuffers();
 }
@@ -51,12 +56,19 @@ void keyboard( unsigned char key, int x, int y ) {
     case 27:
         exit(0);
         break;
+    case '1':
+        // Enter line drawing mode
+        mode = LINE_DRAWING;
+        break;
     case 'c':
         canvas->clear();
         break;
-    //Do something when 'N' is pressed
     case 'n':
-        color_t* color = new color_t(255, 0, 0);
+        // Do something when 'N' is pressed
+        cout << "Enter the RGB" << endl;
+        int r = 0, g = 0, b = 0;
+        //cin >> r >> g >> b;
+        color_t* color = new color_t(r, g, b);
         canvas = new canvas_t(win_width, win_height, color);
         break;
     //Ignore all other keypresses
@@ -65,26 +77,40 @@ void keyboard( unsigned char key, int x, int y ) {
 }
 
 //Mouse callback
-void mouse(int button, int state, int x, int y)
-{
-   if (state == GLUT_DOWN)
-     {
-       if (button == GLUT_LEFT_BUTTON)
-	 {
-	   //Do something when the left mouse button is clicked
-	 }
-     }
-   glutPostRedisplay();
+void mouse(int button, int state, int x, int y) {
+    y = 512 - y;
+    if (state == GLUT_DOWN) {
+        if (button == GLUT_LEFT_BUTTON) {
+            if (mode == LINE_DRAWING) {
+                cout << x << ", " << y << endl;
+                if (point1[0] == -1 || point1[1] == -1) {
+                    point1[0] = x;
+                    point1[1] = y;
+                } else {
+                    point2[0] = x;
+                    point2[1] = y;
+                    color_t* color = new color_t(pen_color[0], pen_color[1], pen_color[2]);
+                    point_t* p1 = new point_t(point1[0], point1[1], color);
+                    point_t* p2 = new point_t(point2[0], point2[1], color);
+                    line_t* l1 = new line_t(p1, p2, color);
+                    l1->draw(canvas);
+                    point1[0] = -1;
+                    point1[1] = -1;
+                    point2[0] = -1;
+                    point2[1] = -1;
+                }
+            }
+        }
+    }
+    glutPostRedisplay();
 }
 
 
 int main (int argc, char *argv[])
 {
-
   glutInit( &argc, argv );
   glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE );
   glutInitWindowSize( win_width, win_height );
-
   //Open a GLUT window
   glutCreateWindow( "MyDraw" );
 
@@ -92,6 +118,7 @@ int main (int argc, char *argv[])
   glutReshapeFunc( reshape );
   glutKeyboardFunc( keyboard );
   glutMouseFunc( mouse );
-
+  color_t* color = new color_t(0, 0, 0);
+  canvas = new canvas_t(win_width, win_height, color);
   glutMainLoop();
 }

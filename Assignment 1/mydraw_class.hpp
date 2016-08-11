@@ -55,4 +55,18 @@ public:
 	void draw_grid(void);
 };
 
+//line_t class
+class line_t {
+private:
+	point_t* p1;
+	point_t* p2;
+	color_t* color;
+public:
+	line_t(point_t* p1, point_t* p2, color_t* color);
+	point_t* get_p1();
+	point_t* get_p2();
+	color_t* get_color();
+	void draw(canvas_t* canvas);
+
+};
 #endif
