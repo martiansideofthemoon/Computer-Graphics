@@ -170,7 +170,7 @@ void mouse(int button, int state, int x, int y) {
                     point3[1] = -1;
                 }
             } else if(mode == FILL_DRAWING) {
-                canvas->fill->draw(canvas, x, y);
+                canvas->fill->draw(canvas, x, y, false);
             }
         }
     }

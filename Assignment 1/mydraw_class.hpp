@@ -154,7 +154,9 @@ public:
 	fill_t(color_t* fill_color);
 	void set_fill_color(color_t* color);
 	color_t* get_fill_color(void);
-	void draw(canvas_t* canvas, int x, int y);
+	void draw(canvas_t* canvas, int x, int y, bool from_string);
+	void from_string(string input, canvas_t* canvas);
+	string to_string(int x, int y);
 };
 
 #endif

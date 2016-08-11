@@ -423,6 +423,9 @@ void drawing_t::draw(canvas_t* canvas) {
             case 'C': {
                 canvas->pen->from_string(*s2);
             } break;
+            case 'F': {
+                canvas->fill->from_string(*s2, canvas);
+            } break;
         }
         s1++; s2++;
     }
@@ -535,7 +538,7 @@ color_t* fill_t::get_fill_color() {
     return fill_color;
 }
 
-void fill_t::draw(canvas_t* canvas, int x, int y)
+void fill_t::draw(canvas_t* canvas, int x, int y, bool from_string)
 {
     point_t* target_point = canvas->get_point(x, y);
     if (target_point->get_color() == fill_color) {
@@ -568,4 +571,24 @@ void fill_t::draw(canvas_t* canvas, int x, int y)
             }
         }
     }
+    if (!from_string)
+        canvas->append('F', this->to_string(x, y));
+}
+
+
+void fill_t::from_string(string input, canvas_t* canvas) {
+    istringstream iss(input);
+    int r, g, b, x, y;
+    iss >> r >> g >> b >> x >> y;
+    color_t* color = new color_t(r, g, b);
+    this->fill_color = color;
+    this->draw(canvas, x, y, true);
+}
+
+string fill_t::to_string(int x, int y) {
+    stringstream ss;
+    color_t* color = this->fill_color;
+    ss << color->R() << " " << color->G() << " " << color->B() << " ";
+    ss << x << " " << y << " ";
+    return ss.str();
 }
