@@ -554,7 +554,7 @@ void fill_t::draw(canvas_t* canvas, int x, int y)
             west_x--;
         }
         west_x++;
-        while(east_x < canvas->get_width()-1 && compare(canvas->get_point(east_x, east_y)->get_color(), target_color)) {
+        while(east_x < canvas->get_width() && compare(canvas->get_point(east_x, east_y)->get_color(), target_color)) {
             east_x++;
         }
         east_x--;
