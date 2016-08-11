@@ -1,6 +1,7 @@
 #include "mydraw_class.hpp"
 #include <GL/glut.h>
 #include <iostream>
+#include <queue>
 #include <fstream>
 #include <sstream>
 using namespace std;
@@ -70,6 +71,10 @@ string point_t::to_string() {
     return ss.str();
 }
 
+void point_t::set_color(color_t* color) {
+    this->color = color;
+}
+
 // canvas methods
 canvas_t::canvas_t(int width, int height, color_t* background) {
     this->width = width;
@@ -77,6 +82,8 @@ canvas_t::canvas_t(int width, int height, color_t* background) {
     this->background = background;
     drawing = new drawing_t();
     this->pen = new pen_t(this);
+    color_t* c1 = new color_t(255, 0, 0);
+    this->fill = new fill_t(c1);
     image.resize(height);
     for (int i = 0; i < height; i++) {
         image[i].resize(width);
@@ -87,7 +94,7 @@ canvas_t::canvas_t(int width, int height, color_t* background) {
 void canvas_t::clear(bool put_config) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            point_t* p = new point_t(i, j, background);
+            point_t* p = new point_t(j, i, background);
             image[i][j] = p;
         }
     }
@@ -150,6 +157,24 @@ void canvas_t::load(string file_name) {
 
 void canvas_t::draw_list() {
     drawing->draw(this);
+}
+
+point_t* canvas_t::get_point(int x, int y) {
+    point_t* p = image[y][x];
+    return p;
+}
+
+void canvas_t::set_point_color(int x, int y, color_t* color) {
+    point_t* p1 = image[y][x];
+    p1->set_color(color);
+}
+
+int canvas_t::get_height() {
+    return height;
+}
+
+int canvas_t::get_width() {
+    return width;
 }
 
 //line_t methods
@@ -480,6 +505,27 @@ string pen_t::to_string() {
 }
 
 //fill_t methods
+fill_t::fill_t(color_t* color) {
+    this->fill_color = color;
+}
+
+
+bool compare(color_t* color1, color_t* color2)
+{   bool check = true;
+    if (color1->R() != color2->R())
+    {
+        check = false;
+    }
+    if (color1->G() != color2->G())
+    {
+        check = false;
+    }
+    if (color1->B() != color2->B())
+    {
+        check = false;
+    }
+    return check;
+}
 
 void fill_t::set_fill_color(color_t* color) {
     this->fill_color = color;
@@ -489,6 +535,59 @@ color_t* fill_t::get_fill_color() {
     return fill_color;
 }
 
-void fill_t::draw(canvas_t* canvas, point_t* point)
+void fill_t::draw(canvas_t* canvas, int x, int y)
 {
+    point_t* target_point = canvas->get_point(x, y);
+    if (target_point->get_color() == fill_color) {
+        return;
+    }
+    queue<point_t*> myqueue;
+    myqueue.push(target_point);
+    color_t* target_color = target_point->get_color();
+    while (!myqueue.empty())
+    {
+        point_t* n = myqueue.front();
+        myqueue.pop();
+        color_t* grey = new color_t(180, 180, 180);
+        if (compare(n->get_color(), target_color))
+        {
+            canvas->set_point_color(n->get_x(), n->get_y(), fill_color);
+            int x1 = n->get_x();
+            int y1 = n->get_y();
+            int status[canvas->get_width()][canvas->get_height()];
+            for (int i = 0; i < canvas->get_width(); i++) {
+                for (int j = 0; j < canvas->get_height(); j++) {
+                    status[i][j] = 0;
+                }
+            }
+            status[x1][y1] = 1;
+            if (x1<510 && x1>2 && y1>2 && y1<510)
+            {
+                point_t* left = canvas->get_point(x1, y1 - 1);
+                point_t* right = canvas->get_point(x1, y1 + 1);
+                point_t* bottom = canvas->get_point(x1 - 1, y1);
+                point_t* top = canvas->get_point(x1 + 1, y1);
+                if (status[left->get_x()][left->get_y()] == 0 && compare(left->get_color(), target_color))
+                {
+                    status[left->get_x()][left->get_y()] = 1;
+                    myqueue.push(left);
+                }
+                if (status[right->get_x()][right->get_y()] == 0 && compare(right->get_color(), target_color))
+                {
+                    status[right->get_x()][right->get_y()] = 1;
+                    myqueue.push(right);
+                }
+                if (status[top->get_x()][top->get_y()] == 0 && compare(top->get_color(), target_color))
+                {
+                    status[top->get_x()][top->get_y()] = 1;
+                    myqueue.push(top);
+                }
+                if (status[bottom->get_x()][bottom->get_y()] == 0 && compare(bottom->get_color(), target_color))
+                {
+                    status[bottom->get_x()][bottom->get_y()] = 1;
+                    myqueue.push(bottom);
+                }
+            }
+        }
+    }
 }

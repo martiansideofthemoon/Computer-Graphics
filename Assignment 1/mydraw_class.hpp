@@ -12,6 +12,7 @@ using namespace std;
 class canvas_t;
 class drawing_t;
 class pen_t;
+class fill_t;
 
 class color_t {
 private:
@@ -42,6 +43,7 @@ public:
 	void draw(canvas_t* canvas, bool saved);
 	void from_string(string input);
 	string to_string();
+	void set_color(color_t* c);
 };
 
 //------------------------
@@ -56,6 +58,7 @@ private:
 	drawing_t* drawing;
 public:
 	pen_t* pen;
+	fill_t* fill;
 	canvas_t(int width, int height, color_t* background);
 	void clear(bool put_config);
 	void put_point(point_t* point);
@@ -64,6 +67,10 @@ public:
 	void save(string file_name);
 	void load(string file_name);
 	void draw_list(void);
+	point_t* get_point(int x, int y);
+	void set_point_color(int x, int y, color_t* color);
+	int get_height();
+	int get_width();
 };
 
 //line_t class
@@ -142,12 +149,12 @@ public:
 //fill_t class
 class fill_t {
 private:
-	point_t* input;
 	color_t* fill_color;
 public:
+	fill_t(color_t* fill_color);
 	void set_fill_color(color_t* color);
 	color_t* get_fill_color(void);
-	void draw(canvas_t* canvas, point_t* point);
+	void draw(canvas_t* canvas, int x, int y);
 };
 
 #endif

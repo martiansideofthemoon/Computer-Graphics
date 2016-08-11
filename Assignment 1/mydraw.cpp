@@ -22,10 +22,12 @@ int LINE_DRAWING = 0;
 int TRI_DRAWING = 2;
 int mode = 1;
 int PEN_DRAWING = 1;
+int FILL_DRAWING = 3;
 int pen_color[3] = {255, 0, 0};
 int point1[2] = {-1, -1};
 int point2[2] = {-1, -1};
 int point3[2] = {-1, -1};
+int fill_color[3] = {0, 255, 0};
 
 //Display callback
 void display( void )
@@ -60,26 +62,26 @@ void keyboard( unsigned char key, int x, int y ) {
         exit(0);
         break;
     case '1': {
-        if (mode == LINE_DRAWING) {
-            mode = PEN_DRAWING;
-        } else {
-            mode = LINE_DRAWING;
-        }
+        mode = LINE_DRAWING;
     } break;
     case '2': {
-        if (mode == TRI_DRAWING) {
-            mode = PEN_DRAWING;
-        } else {
-            mode = TRI_DRAWING;
-        }
+        mode = TRI_DRAWING;
     } break;
-    case 'c':
-        canvas->clear(true);
-        break;
-    case 'e':
-        canvas->pen->toggle_eraser();
-        break;
     case 'f': {
+        mode = FILL_DRAWING;
+    } break;
+    case 'c': {
+        canvas->clear(true);
+    } break;
+    case 'e': {
+        canvas->pen->toggle_eraser();
+    } break;
+    case 'g': {
+        cout << "Enter fill color" << endl;
+        int r, g, b;
+        cin >> r >> g >> b;
+        color_t* color1 = new color_t(r, g, b);
+        canvas->fill->set_fill_color(color1);
     } break;
     case 'h': {
         cout << "Enter pen color" << endl;
@@ -167,6 +169,8 @@ void mouse(int button, int state, int x, int y) {
                     point3[0] = -1;
                     point3[1] = -1;
                 }
+            } else if(mode == FILL_DRAWING) {
+                canvas->fill->draw(canvas, x, y);
             }
         }
     }
