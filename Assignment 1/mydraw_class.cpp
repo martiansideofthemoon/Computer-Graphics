@@ -76,14 +76,15 @@ canvas_t::canvas_t(int width, int height, color_t* background) {
     this->height = height;
     this->background = background;
     drawing = new drawing_t();
+    this->pen = new pen_t(this);
     image.resize(height);
     for (int i = 0; i < height; i++) {
         image[i].resize(width);
     }
-    clear();
+    clear(true);
 }
 
-void canvas_t::clear() {
+void canvas_t::clear(bool put_config) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             point_t* p = new point_t(i, j, background);
@@ -91,10 +92,31 @@ void canvas_t::clear() {
         }
     }
     drawing->clear();
+    if (put_config) {
+        this->pen = new pen_t(this, this->pen->get_size(), this->pen->get_color(), this->pen->get_eraser());
+    }
 }
 
 void canvas_t::put_point(point_t* point) {
-    image[point->get_y()][point->get_x()] = point;
+    color_t* color;
+    if (this->pen->get_eraser()) {
+        color = this->background;
+    } else {
+        color = this->pen->get_color();
+    }
+    int size = this->pen->get_size();
+    int centre_x = point->get_x();
+    int centre_y = point->get_y();
+    int lower_y = centre_y - size + 1 > 0 ? centre_y - size + 1 : 0;
+    int lower_x = centre_x - size + 1 > 0 ? centre_x - size + 1 : 0;
+    int upper_y = centre_y + size - 1 < this->height-1 ? centre_y + size - 1 : this->height-1;
+    int upper_x = centre_x + size - 1 < this->width-1 ? centre_x + size - 1 : this->width-1;
+    for (int i = lower_y; i <= upper_y; i++) {
+        for (int j = lower_x; j <= upper_x; j++) {
+            point_t* point1 = new point_t(j, i, color);
+            image[i][j] = point1;
+        }
+    }
 }
 
 
@@ -122,6 +144,7 @@ void canvas_t::save(string file_name) {
 }
 
 void canvas_t::load(string file_name) {
+    clear(false);
     drawing->load(file_name);
 }
 
@@ -372,6 +395,9 @@ void drawing_t::draw(canvas_t* canvas) {
                 t1->from_string(*s2);
                 t1->draw(canvas, true);
             } break;
+            case 'C': {
+                canvas->pen->from_string(*s2);
+            } break;
         }
         s1++; s2++;
     }
@@ -383,53 +409,75 @@ void drawing_t::clear() {
 }
 
 //pen_t methods
-pen_t::pen_t() {
+pen_t::pen_t(canvas_t* canvas) {
     size = 1;
-    pen_color = new color_t(0,0,0);
-    mode = true;
+    color = new color_t(255, 255, 255);
+    eraser = false;
+    this->canvas = canvas;
+    canvas->append('C', this->to_string());
 }
 
-pen_t::pen_t(int _size, color_t* pc, bool _mode) {
-    size = _size;
-    mode = _mode;
-    pen_color = pc;
+pen_t::pen_t(canvas_t* canvas, int size, color_t* color, bool eraser) {
+    this->size = size;
+    this->eraser = eraser;
+    this->color = color;
+    this->canvas = canvas;
+    canvas->append('C', this->to_string());
 }
 
-int pen_t::get_pen_size() {
+int pen_t::get_size() {
     return size;
 }
 
-bool pen_t::get_pen_mode() {
-    return mode;
+bool pen_t::get_eraser() {
+    return eraser;
 }
 
-color_t* pen_t::get_pen_color() {
-    return pen_color;
+color_t* pen_t::get_color() {
+    return color;
 }
 
-void pen_t::set_pen_size(int size) {
+void pen_t::set_size(int size) {
     this->size = size;
+    canvas->append('C', this->to_string());
 }
 
-void pen_t::set_pen_color(color_t* color) {
-    this->pen_color = color;
+void pen_t::set_color(color_t* color) {
+    this->color = color;
+    canvas->append('C', this->to_string());
 }
 
-void pen_t::set_pen_mode() {
-    if (mode == false)
-    {
-        mode = true;
+void pen_t::toggle_eraser() {
+    eraser = !eraser;
+    canvas->append('C', this->to_string());
+}
+
+void pen_t::from_string(string input) {
+    istringstream iss(input);
+    int r, g, b, size, eraser;
+    iss >> r >> g >> b >> size >> eraser;
+    color = new color_t(r, g, b);
+    this->color = color;
+    this->size = size;
+    if (eraser == 1) {
+        this->eraser = true;
+    } else {
+        this->eraser = false;
     }
-    else
-    {
-        mode = false;
+}
+
+string pen_t::to_string() {
+    stringstream ss;
+    color_t* color = this->get_color();
+    ss << color->R() << " " << color->G() << " " << color->B();
+    ss << " " << size << " ";
+    if (eraser) {
+        ss << 1;
+    } else {
+        ss << 0;
     }
+    return ss.str();
 }
-
-void pen_t::draw(canvas_t* canvas, point_t* p) {
-    canvas->put_point(p);
-}
-
 
 //fill_t methods
 

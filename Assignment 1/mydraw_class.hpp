@@ -11,6 +11,7 @@ using namespace std;
 //color_t class
 class canvas_t;
 class drawing_t;
+class pen_t;
 
 class color_t {
 private:
@@ -54,8 +55,9 @@ private:
 	color_t* background;
 	drawing_t* drawing;
 public:
+	pen_t* pen;
 	canvas_t(int width, int height, color_t* background);
-	void clear(void);
+	void clear(bool put_config);
 	void put_point(point_t* point);
 	void draw_grid(void);
 	void append(char op, string input);
@@ -114,24 +116,27 @@ public:
 	void save(string file_name);
 	void append(char op, string input);
 	void draw(canvas_t* canvas);
+	void clear();
 };
 
 //pen_t class
 class pen_t {
 private:
 	int size;
-	color_t* pen_color;
-	bool mode;
+	color_t* color;
+	bool eraser;
+	canvas_t* canvas;
 public:
-	pen_t();
-	pen_t(int _size, color_t* pc, bool _mode);
-	int get_pen_size(void);
-	color_t* get_pen_color(void);
-	bool get_pen_mode(void);
-	void set_pen_size(int size);
-	void set_pen_color(color_t* color);
-	void set_pen_mode(void);
-	void draw(canvas_t* canvas, point_t* point);
+	pen_t(canvas_t* canvas);
+	pen_t(canvas_t* canvas, int size, color_t* color, bool eraser);
+	int get_size(void);
+	color_t* get_color(void);
+	bool get_eraser();
+	void set_size(int size);
+	void set_color(color_t* color);
+	void toggle_eraser();
+	void from_string(string input);
+	string to_string();
 };
 
 //fill_t class

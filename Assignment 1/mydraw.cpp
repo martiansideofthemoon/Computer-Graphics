@@ -18,7 +18,6 @@ int win_width = 512;
 //Window height
 int win_height = 512;
 canvas_t* canvas;
-pen_t* pen;
 int LINE_DRAWING = 0;
 int TRI_DRAWING = 2;
 int mode = 1;
@@ -75,31 +74,31 @@ void keyboard( unsigned char key, int x, int y ) {
         }
     } break;
     case 'c':
-        canvas->clear();
+        canvas->clear(true);
         break;
     case 'e':
-        pen->set_pen_mode();
+        canvas->pen->toggle_eraser();
         break;
     case 'f': {
     } break;
     case 'h': {
         cout << "Enter pen color" << endl;
-        // int a = 0, b = 0, c = 0;
-        //cin >> r >> g >> b;
-        color_t* color1 = new color_t(0, 0, 0);
-        pen->set_pen_color(color1);
+        int r, g, b;
+        cin >> r >> g >> b;
+        color_t* color1 = new color_t(r, g, b);
+        canvas->pen->set_color(color1);
     } break;
     case 'j': {
         cout << "Enter pen size" << endl;
         int size;
         cin >> size;
-        pen->set_pen_size(size);
+        canvas->pen->set_size(size);
     } break;
     case 'n': {
         // Do something when 'N' is pressed
         cout << "Enter the RGB" << endl;
         int r = 0, g = 0, b = 0;
-        //cin >> r >> g >> b;
+        cin >> r >> g >> b;
         color_t* color = new color_t(r, g, b);
         canvas = new canvas_t(win_width, win_height, color);
     } break;
@@ -168,19 +167,6 @@ void mouse(int button, int state, int x, int y) {
                     point3[0] = -1;
                     point3[1] = -1;
                 }
-            }
-
-            else if (mode == PEN_DRAWING)
-            {
-                cout << x << ", " << y << endl;
-                    point3[0] = x;
-                    point3[1] = y;
-                    color_t* color = new color_t(pen_color[0], pen_color[1], pen_color[2]);
-                    point_t* p3 = new point_t(point3[0], point3[1], color);
-                    pen_t* pen1 = new pen_t(1, color, true);
-                    pen1->draw(canvas , p3);
-                    point3[0] = -1;
-                    point3[1] = -1;
             }
         }
     }
