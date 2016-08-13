@@ -82,7 +82,7 @@ canvas_t::canvas_t(int width, int height, color_t* background) {
     this->background = background;
     drawing = new drawing_t();
     this->pen = new pen_t(this);
-    color_t* c1 = new color_t(255, 0, 0);
+    color_t* c1 = new color_t(1, 0, 0);
     this->fill = new fill_t(c1);
     image.resize(height);
     for (int i = 0; i < height; i++) {
@@ -132,9 +132,9 @@ void canvas_t::draw_grid() {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             color_t* color = image[i][j]->get_color();
-            checkImage[i][j][0] = (GLubyte) color->R();
-            checkImage[i][j][1] = (GLubyte) color->G();
-            checkImage[i][j][2] = (GLubyte) color->B();
+            checkImage[i][j][0] = (GLubyte) (int) 255*color->R();
+            checkImage[i][j][1] = (GLubyte) (int) 255*color->G();
+            checkImage[i][j][2] = (GLubyte) (int) 255*color->B();
       }
     }
     glRasterPos2i(0, 0);
@@ -439,7 +439,7 @@ void drawing_t::clear() {
 //pen_t methods
 pen_t::pen_t(canvas_t* canvas) {
     size = 1;
-    color = new color_t(255, 255, 255);
+    color = new color_t(1, 1, 1);
     eraser = false;
     this->canvas = canvas;
     canvas->append('C', this->to_string());

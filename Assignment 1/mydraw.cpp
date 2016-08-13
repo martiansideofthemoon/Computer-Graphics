@@ -21,13 +21,10 @@ canvas_t* canvas;
 int LINE_DRAWING = 0;
 int TRI_DRAWING = 2;
 int mode = 1;
-int PEN_DRAWING = 1;
 int FILL_DRAWING = 3;
-int pen_color[3] = {255, 0, 0};
 int point1[2] = {-1, -1};
 int point2[2] = {-1, -1};
 int point3[2] = {-1, -1};
-int fill_color[3] = {0, 255, 0};
 
 //Display callback
 void display( void )
@@ -77,7 +74,7 @@ void keyboard( unsigned char key, int x, int y ) {
         canvas->pen->toggle_eraser();
     } break;
     case 'g': {
-        cout << "Enter fill color" << endl;
+        cout << "Enter fill color. Each channel from 0 to 1" << endl;
         int r, g, b;
         cin >> r >> g >> b;
         color_t* color1 = new color_t(r, g, b);
@@ -85,7 +82,7 @@ void keyboard( unsigned char key, int x, int y ) {
     } break;
     case 'h': {
         cout << "Enter pen color" << endl;
-        int r, g, b;
+        float r, g, b;
         cin >> r >> g >> b;
         color_t* color1 = new color_t(r, g, b);
         canvas->pen->set_color(color1);
@@ -98,8 +95,8 @@ void keyboard( unsigned char key, int x, int y ) {
     } break;
     case 'n': {
         // Do something when 'N' is pressed
-        cout << "Enter the RGB" << endl;
-        int r = 0, g = 0, b = 0;
+        cout << "Enter the RGB. Each channel from 0 to 1" << endl;
+        float r = 0, g = 0, b = 0;
         cin >> r >> g >> b;
         color_t* color = new color_t(r, g, b);
         canvas = new canvas_t(win_width, win_height, color);
@@ -136,7 +133,7 @@ void mouse(int button, int state, int x, int y) {
                 } else {
                     point2[0] = x;
                     point2[1] = y;
-                    color_t* color = new color_t(pen_color[0], pen_color[1], pen_color[2]);
+                    color_t* color = new color_t(0,0,0);
                     point_t* p1 = new point_t(point1[0], point1[1], color);
                     point_t* p2 = new point_t(point2[0], point2[1], color);
                     line_t* l1 = new line_t(p1, p2, color);
@@ -156,7 +153,7 @@ void mouse(int button, int state, int x, int y) {
                 } else {
                     point3[0] = x;
                     point3[1] = y;
-                    color_t* color = new color_t(pen_color[0], pen_color[1], pen_color[2]);
+                    color_t* color = new color_t(0,0,0);
                     point_t* p1 = new point_t(point1[0], point1[1], color);
                     point_t* p2 = new point_t(point2[0], point2[1], color);
                     point_t* p3 = new point_t(point3[0], point3[1], color);
