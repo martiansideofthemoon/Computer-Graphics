@@ -6,6 +6,23 @@
 #include <sstream>
 using namespace std;
 //-------------------
+bool compare(color_t* color1, color_t* color2)
+{   bool check = true;
+    if (color1->R() != color2->R())
+    {
+        check = false;
+    }
+    if (color1->G() != color2->G())
+    {
+        check = false;
+    }
+    if (color1->B() != color2->B())
+    {
+        check = false;
+    }
+    return check;
+}
+
 //color_t methods
 
 color_t::color_t():r(0.0),g(0.0),b(0.0) { }
@@ -175,6 +192,20 @@ int canvas_t::get_height() {
 
 int canvas_t::get_width() {
     return width;
+}
+
+void canvas_t::set_background(color_t* color) {
+    color_t* old = this->background;
+    this->background = color;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            color_t* pixel = image[i][j]->get_color();
+            if (compare(pixel, old)) {
+                color_t* new_color = new color_t(color->R(), color->G(), color->B());
+                set_point_color(j, i, new_color);
+            }
+        }
+    }
 }
 
 //line_t methods
@@ -510,24 +541,6 @@ string pen_t::to_string() {
 //fill_t methods
 fill_t::fill_t(color_t* color) {
     this->fill_color = color;
-}
-
-
-bool compare(color_t* color1, color_t* color2)
-{   bool check = true;
-    if (color1->R() != color2->R())
-    {
-        check = false;
-    }
-    if (color1->G() != color2->G())
-    {
-        check = false;
-    }
-    if (color1->B() != color2->B())
-    {
-        check = false;
-    }
-    return check;
 }
 
 void fill_t::set_fill_color(color_t* color) {

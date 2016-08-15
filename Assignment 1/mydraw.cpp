@@ -87,6 +87,13 @@ void keyboard( unsigned char key, int x, int y ) {
         color_t* color1 = new color_t(r, g, b);
         canvas->pen->set_color(color1);
     } break;
+    case 'i': {
+        cout << "Enter background color" << endl;
+        float r, g, b;
+        cin >> r >> g >> b;
+        color_t* color1 = new color_t(r, g, b);
+        canvas->set_background(color1);
+    } break;
     case 'j': {
         cout << "Enter pen size" << endl;
         int size;
