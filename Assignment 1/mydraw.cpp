@@ -176,6 +176,22 @@ void mouse(int button, int state, int x, int y) {
             } else if(mode == FILL_DRAWING) {
                 canvas->fill->draw(canvas, x, y, false);
             }
+        } else if (button == GLUT_RIGHT_BUTTON) {
+            if (mode == LINE_DRAWING) {
+                cout << "yolo" << endl;
+                if (point2[0] == -1 || point2[1] == -1) {
+                    point1[0] = -1;
+                    point1[1] = -1;
+                }
+            } else if (mode == TRI_DRAWING) {
+                if (point2[0] == -1 || point2[1] == -1) {
+                    point1[0] = -1;
+                    point1[1] = -1;
+                } else if(point3[0] == -1 || point3[1] == -1) {
+                    point2[0] = -1;
+                    point2[1] = -1;
+                }
+            }
         }
     }
     glutPostRedisplay();
