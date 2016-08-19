@@ -75,7 +75,7 @@ void keyboard( unsigned char key, int x, int y ) {
     } break;
     case 'g': {
         cout << "Enter fill color. Each channel from 0 to 1" << endl;
-        int r, g, b;
+        float r, g, b;
         cin >> r >> g >> b;
         color_t* color1 = new color_t(r, g, b);
         canvas->fill->set_fill_color(color1);
