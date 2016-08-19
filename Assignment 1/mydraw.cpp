@@ -178,7 +178,6 @@ void mouse(int button, int state, int x, int y) {
             }
         } else if (button == GLUT_RIGHT_BUTTON) {
             if (mode == LINE_DRAWING) {
-                cout << "yolo" << endl;
                 if (point2[0] == -1 || point2[1] == -1) {
                     point1[0] = -1;
                     point1[1] = -1;
