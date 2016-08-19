@@ -76,7 +76,8 @@ void point_t::draw(canvas_t* canvas, bool saved) {
 
 void point_t::from_string(string input) {
     istringstream iss(input);
-    int r, g, b;
+    int x, y;
+    float r, g, b;
     iss >> x >> y >> r >> g >> b;
     color = new color_t(r, g, b);
 }
@@ -309,7 +310,8 @@ void line_t::draw(canvas_t* canvas, bool saved) {
 
 void line_t::from_string(string input) {
     istringstream iss(input);
-    int x1, y1, x2, y2, r, g, b;
+    int x1, y1, x2, y2;
+    float r, g, b;
     iss >> x1 >> y1 >> x2 >> y2 >> r >> g >> b;
     color = new color_t(r, g, b);
     p1 = new point_t(x1, y1, color);
@@ -513,7 +515,8 @@ void pen_t::toggle_eraser() {
 
 void pen_t::from_string(string input) {
     istringstream iss(input);
-    int r, g, b, size, eraser;
+    float r, g, b;
+    int size, eraser;
     iss >> r >> g >> b >> size >> eraser;
     color = new color_t(r, g, b);
     this->color = color;
@@ -591,7 +594,8 @@ void fill_t::draw(canvas_t* canvas, int x, int y, bool from_string)
 
 void fill_t::from_string(string input, canvas_t* canvas) {
     istringstream iss(input);
-    int r, g, b, x, y;
+    float r, g, b;
+    int x, y;
     iss >> r >> g >> b >> x >> y;
     color_t* color = new color_t(r, g, b);
     this->fill_color = color;
