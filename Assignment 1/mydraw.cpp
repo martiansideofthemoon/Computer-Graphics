@@ -130,7 +130,7 @@ void keyboard( unsigned char key, int x, int y ) {
 
 //Mouse callback
 void mouse(int button, int state, int x, int y) {
-    y = 512 - y;
+    y = win_height - y;
     if (state == GLUT_DOWN) {
         if (button == GLUT_LEFT_BUTTON) {
             if (mode == LINE_DRAWING) {

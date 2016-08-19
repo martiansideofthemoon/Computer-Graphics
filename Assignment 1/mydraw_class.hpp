@@ -71,8 +71,11 @@ public:
 	void set_point_color(int x, int y, color_t* color);
 	int get_height();
 	int get_width();
-	void set_background(color_t* color, bool from_string);
+	void set_background(color_t* color, bool save);
 	color_t* get_background();
+	void background_from_string(string input);
+	string background_to_string();
+
 };
 
 //line_t class

@@ -107,6 +107,7 @@ canvas_t::canvas_t(int width, int height, color_t* background) {
         image[i].resize(width);
     }
     clear(true);
+    append('B', background_to_string());
 }
 
 void canvas_t::clear(bool put_config) {
@@ -195,7 +196,7 @@ int canvas_t::get_width() {
     return width;
 }
 
-void canvas_t::set_background(color_t* color, bool from_string) {
+void canvas_t::set_background(color_t* color, bool save) {
     color_t* old = this->background;
     this->background = color;
     for (int i = 0; i < height; i++) {
@@ -207,13 +208,28 @@ void canvas_t::set_background(color_t* color, bool from_string) {
             }
         }
     }
-    if (from_string) {
-        append('C', pen->to_string());
+    if (save) {
+        append('B', background_to_string());
     }
 }
 
 color_t* canvas_t::get_background() {
     return background;
+}
+
+void canvas_t::background_from_string(string input) {
+    istringstream iss(input);
+    float r, g, b;
+    iss >> r >> g >> b;
+    color_t* color = new color_t(r, g, b);
+    set_background(color, false);
+}
+
+string canvas_t::background_to_string() {
+    stringstream ss;
+    color_t* color = this->background;
+    ss << color->R() << " " << color->G() << " " << color->B();
+    return ss.str();
 }
 
 //line_t methods
@@ -466,6 +482,9 @@ void drawing_t::draw(canvas_t* canvas) {
             case 'F': {
                 canvas->fill->from_string(*s2, canvas);
             } break;
+            case 'B': {
+                canvas->background_from_string(*s2);
+            }
         }
         s1++; s2++;
     }
@@ -525,7 +544,7 @@ void pen_t::from_string(string input) {
     float r, g, b;
     float back_r, back_g, back_b;
     int size, eraser;
-    iss >> r >> g >> b >> size >> eraser >> back_r >> back_g >> back_b;
+    iss >> r >> g >> b >> size >> eraser;
     color = new color_t(r, g, b);
     this->color = color;
     this->size = size;
@@ -534,8 +553,6 @@ void pen_t::from_string(string input) {
     } else {
         this->eraser = false;
     }
-    color_t* back_color = new color_t(back_r, back_g, back_b);
-    this->canvas->set_background(back_color, false);
 }
 
 string pen_t::to_string() {
@@ -548,8 +565,6 @@ string pen_t::to_string() {
     } else {
         ss << 0;
     }
-    color_t* background = canvas->get_background();
-    ss << " " << background->R() << " " << background->G() << " " << background->B();
     return ss.str();
 }
 
