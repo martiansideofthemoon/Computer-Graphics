@@ -14,9 +14,9 @@
 #include "mydraw_class.hpp"
 
 //Window width
-int win_width = 512;
+int win_width = 1024;
 //Window height
-int win_height = 512;
+int win_height = 768;
 canvas_t* canvas;
 int LINE_DRAWING = 0;
 int TRI_DRAWING = 2;
