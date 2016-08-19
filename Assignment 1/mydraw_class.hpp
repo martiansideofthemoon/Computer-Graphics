@@ -71,7 +71,8 @@ public:
 	void set_point_color(int x, int y, color_t* color);
 	int get_height();
 	int get_width();
-	void set_background(color_t* color);
+	void set_background(color_t* color, bool from_string);
+	color_t* get_background();
 };
 
 //line_t class

@@ -195,7 +195,7 @@ int canvas_t::get_width() {
     return width;
 }
 
-void canvas_t::set_background(color_t* color) {
+void canvas_t::set_background(color_t* color, bool from_string) {
     color_t* old = this->background;
     this->background = color;
     for (int i = 0; i < height; i++) {
@@ -207,6 +207,13 @@ void canvas_t::set_background(color_t* color) {
             }
         }
     }
+    if (from_string) {
+        append('C', pen->to_string());
+    }
+}
+
+color_t* canvas_t::get_background() {
+    return background;
 }
 
 //line_t methods
@@ -516,8 +523,9 @@ void pen_t::toggle_eraser() {
 void pen_t::from_string(string input) {
     istringstream iss(input);
     float r, g, b;
+    float back_r, back_g, back_b;
     int size, eraser;
-    iss >> r >> g >> b >> size >> eraser;
+    iss >> r >> g >> b >> size >> eraser >> back_r >> back_g >> back_b;
     color = new color_t(r, g, b);
     this->color = color;
     this->size = size;
@@ -526,6 +534,8 @@ void pen_t::from_string(string input) {
     } else {
         this->eraser = false;
     }
+    color_t* back_color = new color_t(back_r, back_g, back_b);
+    this->canvas->set_background(back_color, false);
 }
 
 string pen_t::to_string() {
@@ -538,6 +548,8 @@ string pen_t::to_string() {
     } else {
         ss << 0;
     }
+    color_t* background = canvas->get_background();
+    ss << " " << background->R() << " " << background->G() << " " << background->B();
     return ss.str();
 }
 

@@ -16,7 +16,7 @@
 //Window width
 int win_width = 1024;
 //Window height
-int win_height = 768;
+int win_height = 640;
 canvas_t* canvas;
 int LINE_DRAWING = 0;
 int TRI_DRAWING = 2;
@@ -92,7 +92,7 @@ void keyboard( unsigned char key, int x, int y ) {
         float r, g, b;
         cin >> r >> g >> b;
         color_t* color1 = new color_t(r, g, b);
-        canvas->set_background(color1);
+        canvas->set_background(color1, true);
     } break;
     case 'j': {
         cout << "Enter pen size" << endl;
