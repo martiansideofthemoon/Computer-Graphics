@@ -2,6 +2,8 @@
 
 Here is a blogpost explaining the algorithms. [http://martiansideofthemoon.github.io/2016/08/16/opengl-paint-tool.html](http://martiansideofthemoon.github.io/2016/08/16/opengl-paint-tool.html).
 
+We have a drawing saved as **my_drawing.txt**. The corresponding image file is **image_file.png**.
+
 ## Running the Program
 
 To run this app, type "make" and execute the mydraw file using "./mydraw"
