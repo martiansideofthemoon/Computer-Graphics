@@ -43,6 +43,34 @@ public:
 class Pedal: public BaseObject {
 private:
   float* center;
+  float* normal;
+  int angle;
+  float width;
+  float length;
+  float pedal_separation;
+  float pedal_height;
+  float* pedal_color;
+  float* shaft_color;
+public:
+  Pedal(float pedal_position[][4], float pedal_colors[][4], float width, float length);
+  void render();
+  void rotate(int rotate_x, int rotate_y, int rotate_z);
+};
+
+class Chain: public BaseObject {
+private:
+  float* center;
+  float* normal;
+  int angle;
+  float radius;
+  float length;
+  float* chain_color;
+  float segment_radius;
+  float thickness;
+public:
+  Chain(float chain_position[][4], float chain_color[4], float radius, float segment_radius, float length);
+  void render();
+  void rotate(int rotate_x, int rotate_y, int rotate_z);
 };
 
 #endif
