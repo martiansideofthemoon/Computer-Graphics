@@ -55,6 +55,7 @@ void processSpecialKeys(int key, int x, int y) {
 void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(0,191.0/255,1,1);
   node->render_tree();
   glutSwapBuffers();
 }
@@ -66,10 +67,10 @@ void init(void)
   // Setup the view of the cube.
   glMatrixMode(GL_PROJECTION);
   //gluPerspective(field of view in degree, aspect ratio, Z near, Z far);
-  gluPerspective(80.0, 1.0, 1.0, 20.0);
+  gluPerspective(100.0, 1.0, 1.0, 20.0);
 
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(0.0, 0.0, 9.0,  // eye is at (0,0,8)
+  gluLookAt(0.0, 0.0, 3.0,  // eye is at (0,0,5)
   0.0, 0.0, 0.0,      // center is at (0,0,0)
   0.0, 1.0, 0.0);      // up is in positive Y direction
 }
@@ -77,11 +78,19 @@ void init(void)
 int main(int argc, char **argv)
 {
   //Parent Node
-  node = new BaseObject();
+  float wheel_position[2][4] = {
+    {0,0,0,1}, // centre position
+    {0,1,1,1}, // normal direction, Z direction
+  };
+  float wheel_colors[2][4] = {
+    {0.0, 0.0, 0.0, 1.0}, // tire color
+    {1, 1, 1, 1} // spoke color
+  };
+  node = new Wheel(wheel_position, wheel_colors, 40, 1, 0.07);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(1000,1000);
+  glutInitWindowSize(640,640);
   glutCreateWindow("Hierarchical Modeling");
   glutDisplayFunc(display);
   glutKeyboardFunc(processNormalKeys);
