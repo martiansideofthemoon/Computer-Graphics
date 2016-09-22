@@ -41,3 +41,22 @@ void BaseObject::rotate(int rotate_x, int rotate_y, int rotate_z) {
   while (ry < 0) ry += 360;
   while (rz < 0) rz += 360;
 }
+
+// Functions of the Wheel Class
+Wheel::Wheel(float* center, float* normal, int angle, int spokes, int radius) {
+  this->center = new float[4];
+  vertexcopy(this->center, center);
+  this->normal = new float[4];
+  vertexcopy(this->normal, normal);
+  this->angle = angle;
+  this->spokes = spokes;
+  this->radius = radius;
+}
+
+void Wheel::render() {
+
+}
+
+void Wheel::rotate(int rotate_x, int rotate_y, int rotate_z) {
+  
+}
