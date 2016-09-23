@@ -2,10 +2,11 @@
 #include <iostream>
 #include <vector>
 #include "Objects.hpp"
+#include "Assembly.hpp"
 
 using namespace std;
 
-
+Cycle* cycle;
 BaseObject *node;
 BaseObject *node2;
 BaseObject *node3;
@@ -32,24 +33,28 @@ void processNormalKeys(unsigned char key, int x, int y) {
 void processSpecialKeys(int key, int x, int y) {
   switch(key) {
     case GLUT_KEY_LEFT :
-    node->rotate(0, -1, 0);
+    cycle->rotate(0,-1,0);
     break;
     case GLUT_KEY_RIGHT :
-    node->rotate(0, 1, 0);
+    cycle->rotate(0,1,0);
     break;
     case GLUT_KEY_UP :
-    node->rotate(-1, 0, 0);
+    cycle->rotate(-1,0,0);
     break;
     case GLUT_KEY_DOWN :
-    node->rotate(1, 0, 0);
+    cycle->rotate(1,0,0);
     break;
     case GLUT_KEY_PAGE_UP :
-    node->rotate(0, 0, -1);
-    node3->rotate(0, 0, -1);
+    cycle->pedal_cycle(-1);
     break;
     case GLUT_KEY_PAGE_DOWN :
-    node->rotate(0, 0, 1);
-    node3->rotate(0, 0, 1);
+    cycle->pedal_cycle(1);
+    break;
+    case GLUT_KEY_HOME:
+    cycle->turn(1);
+    break;
+    case GLUT_KEY_END:
+    cycle->turn(-1);
     break;
   }
   //Redraw
@@ -60,8 +65,7 @@ void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(0,191.0/255,1,1);
-  node->render_tree();
-  node3->render_tree();
+  cycle->render();
   glutSwapBuffers();
 }
 
@@ -82,30 +86,33 @@ void init(void)
 
 int main(int argc, char **argv)
 {
-  //Parent Node
-  float pedal_position[2][4] = {
-    {0,0,0,1}, // centre position
-    {0,0,1,1}, // normal direction, Z direction
-  };
-  float wheel_position[2][4] = {
-    {0,0,0,1}, // centre position
-    {0,0,1,1}, // normal direction, Z direction
-  };
-  float wheel_colors[2][4] = {
-    {0.4, 0.4, 0.4, 1.0}, // tire color
-    {0.4, 0.4, 0.4, 1} // spoke color
-  };
-  float pedal_colors[2][4] = {
-    {0, 0, 0, 1.0}, // pedal color
-    {0.4, 0.4, 0.4, 1} // shaft color
-  };
-  float chain_color[4] = {0, 0, 0, 1};
-  //node = new Wheel(wheel_position, wheel_colors, 40, 1, 0.07);
-  node = new Pedal(pedal_position, pedal_colors, 0.3, 0.5);
-  node2 = new Wheel(wheel_position, wheel_colors, 5, 0.1, 0.01);
-  node3 = new Chain(pedal_position, chain_color, 0.1, 0.03, 1.5);
-  node->add_child(node2);
-  //node2->add_child(node3);
+  // //Parent Node
+  // float pedal_position[2][4] = {
+  //   {0,0,0,1}, // centre position
+  //   {0,0,1,1}, // normal direction, Z direction
+  // };
+  // float wheel_position[2][4] = {
+  //   {0,0,0,1}, // centre position
+  //   {0,0,1,1}, // normal direction, Z direction
+  // };
+  // float wheel_colors[2][4] = {
+  //   {0.4, 0.4, 0.4, 1.0}, // tire color
+  //   {0.4, 0.4, 0.4, 1} // spoke color
+  // };
+  // float pedal_colors[2][4] = {
+  //   {0, 0, 0, 1.0}, // pedal color
+  //   {0.4, 0.4, 0.4, 1} // shaft color
+  // };
+  // float chain_color[4] = {1, 0, 0, 1};
+  // //node = new Wheel(wheel_position, wheel_colors, 40, 1, 0.07);
+  // //node = new Pedal(pedal_position, pedal_colors, 0.3, 0.5);
+  // //node2 = new Wheel(wheel_position, wheel_colors, 5, 0.1, 0.01);
+  // //node3 = new Chain(pedal_position, chain_color, 0.1, 0.03, 1.5);
+  // //node->add_child(node2);
+  // //node2->add_child(node3);
+  // float frame_len[2] = {1.5, 1};
+  // //node = new Frame(pedal_position, chain_color, 1, frame_len, 0.05);
+  cycle = new Cycle("arbit.txt");
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(640,640);
