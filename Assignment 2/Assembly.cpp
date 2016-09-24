@@ -71,10 +71,15 @@ Cycle::Cycle(string file_name) {
 
   // Handle parameters
   float handle_center[4] = {-1*frame_length[0], height, 0.0 , 1.0}; // centre position
-  float handle_dimension[3] = {
+  float handle_dimension[] = {
     cycle_width, // l_tyre_thick depends on thickness of tyre
-    height-wheel_radius, // l_frame_height depends on height of frame
-    wheel_radius, // l_tyre_radius depends on radius of tyre
+    height, // l_frame_height depends on height of frame
+    wheel_radius + tire_thickness, // l_tyre_radius depends on radius of tyre
+    1.5*tube_thickness,
+    2.0, // length of handle
+    0.4, // length of handle grip
+    0.7, // handle offset
+    60, // handle angle
   };
   float handle_colors[3][4] = {
     {0.75, 0.75, 0.75, 1.0}, // handle_body_color

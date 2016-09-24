@@ -105,11 +105,16 @@ private:
   float* handle_body_color;
   float* handle_frame_color;
   float* handle_actual_color;
+  float length_of_handle;
+  float length_of_grip;
+  float handle_angle;
+  float handle_offset;
   float l_tyre_thick;
   float l_frame_height;
   float l_tyre_radius;
+  float l_frame_thick;
 public:
-  Handle(float* Handle_center, float handle_colors[][4], float handle_dimension[3]);
+  Handle(float* Handle_center, float handle_colors[][4], float handle_dimension[8]);
   void render();
   void rotate(int rotate_x, int rotate_y, int rotate_z);
 };

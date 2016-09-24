@@ -421,12 +421,17 @@ void Frame::rotate(int rotate_x, int rotate_y, int rotate_z) {
 }
 
 // Functions of the Handle Class
-Handle::Handle(float* Handle_center , float handle_colors[][4], float handle_dimension[3]) {
+Handle::Handle(float* Handle_center , float handle_colors[][4], float handle_dimension[4]) {
   this->center = new float[4];
   vertexcopy(Handle_center,this->center);
   this->l_tyre_thick = handle_dimension[0]; //depends on thickness of tyre
   this->l_frame_height = handle_dimension[1];          //depends on height of frame
   this->l_tyre_radius = handle_dimension[2];  //depends on radius of tyre
+  this->l_frame_thick = handle_dimension[3];  //depends on thickness of frame
+  this->length_of_handle = handle_dimension[4];
+  this->length_of_grip = handle_dimension[5];
+  this->handle_offset = handle_dimension[6];
+  this->handle_angle = handle_dimension[7];
   this->handle_body_color = new float[4];
   this->handle_actual_color = new float[4];
   this->handle_frame_color = new float[4];
@@ -436,31 +441,21 @@ Handle::Handle(float* Handle_center , float handle_colors[][4], float handle_dim
 }
 
 void Handle::render() {
-    float length_of_handle = 4.0f;
-    float length_of_hand_grip = 1.0f;
     float length_of_brake = 0.6f;
     float length_of_brake_support = 0.5f;
-    float radius_of_handle = 0.2f;
-    float radius_of_hand_grip = 0.21f;
+    float radius_of_handle = l_frame_thick/2;
+    float radius_of_hand_grip = 1.5*l_frame_thick/2;
     float radius_of_brake = 0.05f;
     float radius_of_brake_support = 0.07f;
 
-    //float l_frame_height = 1.5f;
-    //float l_tyre_radius = 1.75f;
     float length_of_brake_tyre = 0.75f;
-    //float l_tyre_thick = 0.5f;
-    float length_of_wheel_support = l_tyre_thick;
-    float length_of_brake_tyre_support = l_tyre_thick;
 
-    float radius_of_red_handle = 0.2f;
-    float radius_of_red_wheel_attach = 0.1f;
-    float radius_of_wheel_support = 0.2f;
+    float radius_of_wheel_support = l_frame_thick/2;
     float radius_of_brake_tyre = 0.05f;
-    float radius_of_handle_tyre_support = 0.2f;
     float radius_of_brake_tyre_support = 0.05f;
 
-    float handle_x = -1.4f;
-    float handle_y = 1.4f;
+    float handle_x = -1*handle_offset*cos(handle_angle*PI/180);
+    float handle_y = handle_offset*sin(handle_angle*PI/180);
     float brake_support_x = 0.3;
 
     glTranslatef(center[0],center[1],center[2]);
@@ -472,110 +467,107 @@ void Handle::render() {
     quadratic = gluNewQuadric();
 
     //main handle
-    glRotatef(180, 0.0, 1.0, 0.0);
     glPushMatrix();
-    glRotatef(-180, 0.0, 1.0, 0.0);
-    glTranslatef(handle_x,handle_y,- length_of_handle/2);
-    gluCylinder(quadratic, radius_of_handle , radius_of_handle , length_of_handle , 32 , 32 );
+    glTranslatef(handle_x,handle_y,-length_of_handle/2);
+    gluCylinder(quadratic, radius_of_handle, radius_of_handle, length_of_handle, 32, 32 );
     glPopMatrix();
 
     //hand grip
     glColor3fv(handle_actual_color);
     glPushMatrix();
-    glRotatef(180, 0.0, 1.0, 0.0);
-    glTranslatef(handle_x,handle_y, -0.1 - length_of_handle/2);
-    gluCylinder(quadratic, radius_of_hand_grip , radius_of_hand_grip , length_of_hand_grip , 32 , 32 );
+    glTranslatef(handle_x,handle_y, -length_of_handle/2);
+    gluCylinder(quadratic, radius_of_hand_grip, radius_of_hand_grip, length_of_grip, 32, 32 );
     glPopMatrix();
     glPushMatrix();
-    glRotatef(180, 0.0, 1.0, 0.0);
-    glTranslatef(handle_x,handle_y, length_of_handle/2- length_of_hand_grip+0.1);
-    gluCylinder(quadratic, radius_of_hand_grip , radius_of_hand_grip , length_of_hand_grip , 32 , 32 );
+    glTranslatef(handle_x,handle_y, length_of_handle/2-length_of_grip);
+    gluCylinder(quadratic, radius_of_hand_grip , radius_of_hand_grip , length_of_grip , 32 , 32 );
     glPopMatrix();
 
     //brake lever
     glPushMatrix();
-    glTranslatef(-handle_x,handle_y,1.2);
-    glRotatef(30, 0.0, 1.0, 0.0);
-    glTranslatef(0.1,0.1,0.0);
-    gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
+    glTranslatef(handle_x,handle_y,1.2);
     glRotatef(-30, 0.0, 1.0, 0.0);
-    glTranslatef(0.25,0.015,0.4);
+    glTranslatef(-0.1,0.1,0.0);
+    gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
+    glRotatef(30, 0.0, 1.0, 0.0);
+    glTranslatef(-0.25,0.015,0.4);
     gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(-handle_x+0.2,handle_y,-1.1);
-    glRotatef(150, 0.0, 1.0, 0.0);
-    glTranslatef(0.1,0.1,0.0);
+    glTranslatef(handle_x-0.2,handle_y,-1.1);
+    glRotatef(210, 0.0, 1.0, 0.0);
+    glTranslatef(-0.1,0.1,0.0);
     gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
-    glRotatef(-150, 0.0, 1.0, 0.0);
-    glTranslatef(0.25,0.015,-1.0);
+    glRotatef(-210, 0.0, 1.0, 0.0);
+    glTranslatef(-0.25,0.015,-1.0);
     gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
     glPopMatrix();
 
     //45 degree pipe
     glColor3fv(handle_body_color);
     glPushMatrix();
-    glRotatef(90, 1.0, 0.0, 0.0);
-    glRotatef(135, 0.0, 1.0, 0.0);
-    gluCylinder(quadratic, 0.15f , 0.15f , 1.95f , 32 , 32 );
+    glRotatef(-1*handle_angle, 0.0, 0.0, 1.0);
+    glRotatef(-90, 0.0, 1.0, 0.0);
+    gluCylinder(quadratic, l_frame_thick/2, l_frame_thick/2, handle_offset, 32, 32 );
     glPopMatrix();
 
     //vertical pipe
     glPushMatrix();
-    glTranslatef(0.1,0.1,0.0);
     glRotatef(90, 1.0, 0.0, 0.0);
-    gluCylinder(quadratic, 0.18f , 0.18f , 1.0f , 32 , 32 );
+    gluCylinder(quadratic, l_frame_thick/2, l_frame_thick/2, l_frame_height - l_tyre_radius, 32, 32 );
     glPopMatrix();
 
     //red vertical pipe
+    float red_prop = 0.8;
+    float red_radius_prop = 1.2;
     glColor3fv(handle_frame_color);
     glPushMatrix();
-    glTranslatef(0.1,-0.9,0.0);
+    glTranslatef(0,-1*((1-red_prop)*(l_frame_height-l_tyre_radius)),0.0);
     glRotatef(90, 1.0, 0.0, 0.0);
-    gluCylinder(quadratic, radius_of_red_handle , radius_of_red_handle , l_frame_height , 32 , 32 );
+    gluCylinder(quadratic, red_radius_prop*l_frame_thick/2, red_radius_prop*l_frame_thick/2, red_prop*(l_frame_height-l_tyre_radius), 32, 32 );
     glPopMatrix();
 
     //red horizontal pipe
     glPushMatrix();
-    glTranslatef(0.1,-1-handle_y,-l_tyre_thick/2);
-    gluCylinder(quadratic, radius_of_handle_tyre_support , radius_of_handle_tyre_support , l_tyre_thick , 32 , 32 );
+    glTranslatef(0, -1*(l_frame_height - l_tyre_radius - l_frame_thick/2),-l_tyre_thick/2);
+    gluCylinder(quadratic, l_frame_thick/2, l_frame_thick/2, l_tyre_thick, 32, 32 );
     glPopMatrix();
 
     //red vertical wheel attachment
     glPushMatrix();
-    glTranslatef(0.1,-0.9-handle_y,-l_tyre_thick/2);
+    glTranslatef(0,-l_frame_height+l_tyre_radius,-l_tyre_thick/2);
     glRotatef(90, 1.0, 0.0, 0.0);
-    gluCylinder(quadratic, radius_of_red_wheel_attach, radius_of_red_wheel_attach , l_tyre_radius , 32 , 32 );
+    gluCylinder(quadratic, l_frame_thick/2, l_frame_thick/2, l_tyre_radius, 32, 32);
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0.1,-0.9-handle_y,l_tyre_thick/2);
+    glTranslatef(0,-l_frame_height+l_tyre_radius,l_tyre_thick/2);
     glRotatef(90, 1.0, 0.0, 0.0);
-    gluCylinder(quadratic, radius_of_red_wheel_attach , radius_of_red_wheel_attach , l_tyre_radius , 32 , 32 );
+    gluCylinder(quadratic, l_frame_thick/2, l_frame_thick/2, l_tyre_radius, 32, 32);
     glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(0.1,-0.9-handle_y- l_tyre_radius ,-0.25);
-    gluCylinder(quadratic, radius_of_wheel_support , radius_of_wheel_support , length_of_wheel_support , 32 , 32 );
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(0, -l_frame_height,-l_tyre_thick/2);
+    // gluCylinder(quadratic, radius_of_wheel_support, radius_of_wheel_support, l_tyre_thick, 32, 32);
+    // glPopMatrix();
 
     //brakes
     glColor3fv(handle_actual_color);
 
     glPushMatrix();
-    glTranslatef(brake_support_x,-1-handle_y,-length_of_brake_tyre_support/2);
+    glTranslatef(0, l_frame_height,-l_tyre_thick/2);
     gluCylinder(quadratic, radius_of_brake_tyre_support , radius_of_brake_tyre_support , length_of_brake_tyre_support , 32 , 32 );
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(brake_support_x,-0.9-handle_y,-length_of_brake_tyre_support/2);
+    glTranslatef(0,-3*l_frame_height,-l_tyre_thick/2);
     glRotatef(90, 1.0, 0.0, 0.0);
     gluCylinder(quadratic, radius_of_brake_tyre , radius_of_brake_tyre , length_of_brake_tyre , 32 , 32 );
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(brake_support_x,-0.9-handle_y,length_of_brake_tyre_support/2);
+    glTranslatef(0,-3*l_frame_height,l_tyre_thick/2);
     glRotatef(90, 1.0, 0.0, 0.0);
     gluCylinder(quadratic, radius_of_brake_tyre , radius_of_brake_tyre , length_of_brake_tyre , 32 , 32 );
     glPopMatrix();
