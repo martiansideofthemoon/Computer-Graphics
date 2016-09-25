@@ -686,5 +686,101 @@ void Seat::render() {
 }
 
 void Seat::rotate(int x, int y, int z) {
+  // Nothing to be done here
+}
 
+Rider::Rider(float rider_position[][4], float rider_color[4], float width, float thigh, float leg) {
+  this->center = new float[4];
+  vertexcopy(rider_position[0], this->center);
+  this->normal = new float[4];
+  vertexcopy(rider_position[1], this->normal);
+  // Normalizing the normal vector
+  float magnitude = sqrt(normal[0]*normal[0]+normal[1]*normal[1]+normal[2]*normal[2]);
+  normal[0] /= magnitude;
+  normal[1] /= magnitude;
+  normal[2] /= magnitude;
+
+  this->thigh_angle = 0;
+  this->leg_angle = 0;
+  this->thigh_angle2 = 0;
+  this->leg_angle2 = 0;
+  this->width = width;
+  this->thigh = thigh;
+  this->leg = leg;
+  this->rider_color = new float[4];
+  vertexcopy(rider_color, this->rider_color);
+}
+
+void Rider::render() {
+  glTranslatef(center[0], center[1], center[2]);
+  float rotation_angle = acos(normal[2])*180.0/PI;
+  glRotatef(rotation_angle, -1*normal[1], normal[0], 0);
+
+  // rendering the tires
+  glColor3fv(rider_color);
+  float person_thickness = 0.1;
+
+  // rendering the mid_body
+  GLUquadricObj *quadratic;
+  quadratic = gluNewQuadric();
+  glPushMatrix();
+  glTranslatef(0, 0, -1*width/2);
+  gluCylinder(quadratic, person_thickness/2, person_thickness/2, width, 32, 32);
+  glPopMatrix();
+
+  // rendering thigh
+  glPushMatrix();
+  glTranslatef(0, 0, width/2);
+  glRotatef(thigh_angle, 0, 0, 1);
+  glRotatef(90, 1, 0, 0);
+  gluCylinder(quadratic, person_thickness/2, person_thickness/2, thigh, 32, 32);
+  glPopMatrix();
+
+  // rendering leg
+  glPushMatrix();
+  glTranslatef(thigh*sin(thigh_angle*PI/180), -1*thigh*cos(thigh_angle*PI/180), width/2);
+  glRotatef(leg_angle, 0, 0, 1);
+  glRotatef(90, 1, 0, 0);
+  gluCylinder(quadratic, person_thickness/2, person_thickness/2, leg, 32, 32);
+  glPopMatrix();
+
+  // rendering thigh
+  glPushMatrix();
+  glTranslatef(0, 0, -1*width/2);
+  glRotatef(thigh_angle2, 0, 0, 1);
+  glRotatef(90, 1, 0, 0);
+  gluCylinder(quadratic, person_thickness/2, person_thickness/2, thigh, 32, 32);
+  glPopMatrix();
+
+  // rendering leg
+  glPushMatrix();
+  glTranslatef(thigh*sin(thigh_angle2*PI/180), -1*thigh*cos(thigh_angle2*PI/180), -1*width/2);
+  glRotatef(leg_angle2, 0, 0, 1);
+  glRotatef(90, 1, 0, 0);
+  gluCylinder(quadratic, person_thickness/2, person_thickness/2, leg, 32, 32);
+  glPopMatrix();
+}
+
+void Rider::rotate(int rotate_x, int rotate_y, int rotate_z) {
+
+}
+
+void Rider::bend_leg(int pedal_angle, float pedal_shaft) {
+  float pedal_x = 0 - pedal_shaft*sin(pedal_angle*PI/180);
+  float pedal_y = -1*center[1] + pedal_shaft*cos(pedal_angle*PI/180);
+  float length = sqrt(pedal_x*pedal_x + pedal_y*pedal_y);
+  float alpha = (180/PI)*acos((thigh*thigh + leg*leg - length*length) / (2*thigh*leg));
+  float beta = (180/PI)*acos((thigh*thigh - leg*leg + length*length) / (2*thigh*length));
+  float phi = 180*atan(pedal_x/pedal_y)/PI;
+  thigh_angle = -1*(phi + beta);
+  leg_angle = 180 - alpha - beta - phi;
+
+  pedal_x = pedal_shaft*sin(pedal_angle*PI/180);
+  pedal_y = -1*center[1] - pedal_shaft*cos(pedal_angle*PI/180);
+  length = sqrt(pedal_x*pedal_x + pedal_y*pedal_y);
+  alpha = (180/PI)*acos((thigh*thigh + leg*leg - length*length) / (2*thigh*leg));
+  beta = (180/PI)*acos((thigh*thigh - leg*leg + length*length) / (2*thigh*length));
+  phi = 180*atan(pedal_x/pedal_y)/PI;
+  thigh_angle2 = -1*(phi + beta);
+  leg_angle2 = 180 - alpha - beta - phi;
 }

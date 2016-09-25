@@ -6,6 +6,8 @@
 // This class is the assembly of a cycle object
 class Cycle {
 private:
+  int phase;
+  float pedal_shaft;
   Frame* frame;
   Wheel* front_wheel;
   Wheel* back_wheel;
@@ -15,6 +17,7 @@ private:
   Chain* chain;
   Handle* handle;
   Seat* seat;
+  Rider* rider;
 public:
   Cycle(string file_name);
   void render();

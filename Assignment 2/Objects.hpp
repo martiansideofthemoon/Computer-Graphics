@@ -133,4 +133,24 @@ public:
   void rotate(int rotate_x, int rotate_y, int rotate_z);
 };
 
+
+class Rider: public BaseObject {
+private:
+  float* center;
+  float* normal;
+  float* rider_color;
+  float width;
+  float thigh;
+  float leg;
+  float thigh_angle;
+  float leg_angle;
+  float thigh_angle2;
+  float leg_angle2;
+public:
+  Rider(float rider_position[][4], float rider_color[4], float width, float thigh, float leg);
+  void render();
+  void bend_leg(int pedal_angle, float pedal_shaft);
+  void rotate(int rotate_x, int rotate_y, int rotate_z);
+};
+
 #endif

@@ -1,6 +1,7 @@
 #include "Assembly.hpp"
 
 Cycle::Cycle(string file_name) {
+  phase = 0;
   // Make the cycle by reading from a file
   string line;
   ifstream myfile(file_name.c_str());
@@ -93,6 +94,7 @@ Cycle::Cycle(string file_name) {
   iss = new istringstream(line);
   float pedal_length;
   *iss >> pedal_length;
+  this->pedal_shaft = pedal_length;
   delete iss;
 
   // fetching pedal shaft width
@@ -293,6 +295,46 @@ Cycle::Cycle(string file_name) {
 
   seat = new Seat(seat_center,  seat_color, seat_dimension);
   frame->add_child(seat);
+
+  // Rider Parameters
+  getline(myfile, line);
+  getline(myfile, line);
+  // rider position
+  float rider_position[2][4] = {
+    {0, height + seat_dimension[0] + 2*seat_dimension[2], 0, 1},
+    {0, 0, 1, 1}
+  };
+
+  // rider color
+  getline(myfile, line);
+  getline(myfile, line);
+  iss = new istringstream(line);
+  float rider_color[4];
+  *iss >> rider_color[0] >> rider_color[1] >> rider_color[2] >> seat_color[3];
+  delete iss;
+
+  // width of the rider
+  float rider_width = 2*seat_dimension[1];
+
+  // thigh of the rider
+  getline(myfile, line);
+  getline(myfile, line);
+  iss = new istringstream(line);
+  float rider_thigh;
+  *iss >> rider_thigh;
+  delete iss;
+
+  // leg of the rider
+  getline(myfile, line);
+  getline(myfile, line);
+  iss = new istringstream(line);
+  float rider_leg;
+  *iss >> rider_leg;
+  delete iss;
+
+  rider = new Rider(rider_position, rider_color, rider_width, rider_thigh, rider_leg);
+  rider->bend_leg(0, pedal_length);
+  frame->add_child(rider);
 }
 
 void Cycle::render() {
@@ -306,11 +348,15 @@ void Cycle::rotate(int rx, int ry, int rz) {
 }
 
 void Cycle::pedal_cycle(int angle) {
+  phase += angle;
+  if (phase >= 360) phase -=360;
+  if (phase < 0) phase += 360;
   pedal->rotate(0,0,angle);
   chain->rotate(0,0,angle);
   back_gear->rotate(0,0,angle);
   front_wheel->rotate(0,0,angle);
   back_wheel->rotate(0,0,angle);
+  rider->bend_leg(phase, this->pedal_shaft);
 }
 
 void Cycle::move_to(float x, float y, float z) {
