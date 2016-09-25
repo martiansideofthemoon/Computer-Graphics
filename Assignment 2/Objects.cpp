@@ -176,7 +176,7 @@ void Pedal::render() {
   // rotating wheel by current angle
   glRotatef(angle, 0, 0, 1);
 
-  // rendering the tires
+  // rendering the shaft
   glColor3fv(shaft_color);
   GLUquadricObj *quadratic;
   quadratic = gluNewQuadric();
@@ -423,6 +423,7 @@ void Frame::rotate(int rotate_x, int rotate_y, int rotate_z) {
 // Functions of the Handle Class
 Handle::Handle(float* Handle_center , float handle_colors[][4], float handle_dimension[4]) {
   this->center = new float[4];
+  this->ry = 0;
   vertexcopy(Handle_center,this->center);
   this->l_tyre_thick = handle_dimension[0]; //depends on thickness of tyre
   this->l_frame_height = handle_dimension[1];          //depends on height of frame
@@ -459,9 +460,9 @@ void Handle::render() {
     float brake_support_x = 0.3;
 
     glTranslatef(center[0],center[1],center[2]);
-    glRotatef(rx, 1.0, 0.0, 0.0);
+
     glRotatef(ry, 0.0, 1.0, 0.0);
-    glRotatef(rz, 0.0, 0.0, 1.0);
+
     glColor3fv(handle_body_color);
     GLUquadricObj *quadratic;
     quadratic = gluNewQuadric();
@@ -484,25 +485,25 @@ void Handle::render() {
     glPopMatrix();
 
     //brake lever
-    glPushMatrix();
-    glTranslatef(handle_x,handle_y,1.2);
-    glRotatef(-30, 0.0, 1.0, 0.0);
-    glTranslatef(-0.1,0.1,0.0);
-    gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
-    glRotatef(30, 0.0, 1.0, 0.0);
-    glTranslatef(-0.25,0.015,0.4);
-    gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(handle_x,handle_y,1.2);
+    // glRotatef(-30, 0.0, 1.0, 0.0);
+    // glTranslatef(-0.1,0.1,0.0);
+    // gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
+    // glRotatef(30, 0.0, 1.0, 0.0);
+    // glTranslatef(-0.25,0.015,0.4);
+    // gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
+    // glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(handle_x-0.2,handle_y,-1.1);
-    glRotatef(210, 0.0, 1.0, 0.0);
-    glTranslatef(-0.1,0.1,0.0);
-    gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
-    glRotatef(-210, 0.0, 1.0, 0.0);
-    glTranslatef(-0.25,0.015,-1.0);
-    gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(handle_x-0.2,handle_y,-1.1);
+    // glRotatef(210, 0.0, 1.0, 0.0);
+    // glTranslatef(-0.1,0.1,0.0);
+    // gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
+    // glRotatef(-210, 0.0, 1.0, 0.0);
+    // glTranslatef(-0.25,0.015,-1.0);
+    // gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
+    // glPopMatrix();
 
     //45 degree pipe
     glColor3fv(handle_body_color);
@@ -553,28 +554,137 @@ void Handle::render() {
     // glPopMatrix();
 
     //brakes
-    glColor3fv(handle_actual_color);
+    // glColor3fv(handle_actual_color);
 
-    glPushMatrix();
-    glTranslatef(0, l_frame_height,-l_tyre_thick/2);
-    gluCylinder(quadratic, radius_of_brake_tyre_support , radius_of_brake_tyre_support , length_of_brake_tyre_support , 32 , 32 );
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(0, l_frame_height,-l_tyre_thick/2);
+    // gluCylinder(quadratic, radius_of_brake_tyre_support , radius_of_brake_tyre_support , length_of_brake_tyre_support , 32 , 32 );
+    // glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(0,-3*l_frame_height,-l_tyre_thick/2);
-    glRotatef(90, 1.0, 0.0, 0.0);
-    gluCylinder(quadratic, radius_of_brake_tyre , radius_of_brake_tyre , length_of_brake_tyre , 32 , 32 );
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(0,-3*l_frame_height,-l_tyre_thick/2);
+    // glRotatef(90, 1.0, 0.0, 0.0);
+    // gluCylinder(quadratic, radius_of_brake_tyre , radius_of_brake_tyre , length_of_brake_tyre , 32 , 32 );
+    // glPopMatrix();
 
-    glPushMatrix();
-    glTranslatef(0,-3*l_frame_height,l_tyre_thick/2);
-    glRotatef(90, 1.0, 0.0, 0.0);
-    gluCylinder(quadratic, radius_of_brake_tyre , radius_of_brake_tyre , length_of_brake_tyre , 32 , 32 );
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(0,-3*l_frame_height,l_tyre_thick/2);
+    // glRotatef(90, 1.0, 0.0, 0.0);
+    // gluCylinder(quadratic, radius_of_brake_tyre , radius_of_brake_tyre , length_of_brake_tyre , 32 , 32 );
+    // glPopMatrix();
 
 }
 
 void Handle::rotate(int rotate_x, int rotate_y, int rotate_z) {
   ry += 2*rotate_y;
   while (ry > 360) ry -= 360;
+}
+
+Seat::Seat(float* seat_center, float* seat_color, float seat_dimension[4]) {
+  this->center = new float[4];
+  vertexcopy(seat_center,this->center);
+  this->seat_color = new float[4];
+  vertexcopy(seat_color,this->seat_color);
+  this->seat_height = seat_dimension[0];
+  this->seat_length = seat_dimension[1];
+  this->seat_width = seat_dimension[2];
+  this->r_seat = seat_dimension[3];
+}
+
+void Seat::render() {
+    glColor3fv(seat_color);
+    glTranslatef(center[0],center[1],center[2]);
+
+    float seat_end = -seat_length;
+    glPushMatrix();
+    glTranslatef(-seat_length/2,0,0);
+    glBegin(GL_POLYGON);
+      glVertex3f(0.1*seat_length, seat_height, -0.5*seat_width);
+      glVertex3f( -seat_length, seat_height, -0.3*seat_width);
+      glVertex3f( -seat_length, seat_height,  0.3*seat_width);
+      glVertex3f(0.1*seat_length, seat_height,  0.5*seat_width);
+      glVertex3f(0.5*seat_length, seat_height,  seat_width);
+      glVertex3f(1.0*seat_length, seat_height,  seat_width);
+      glVertex3f(1.0*seat_length, seat_height, -seat_width);
+      glVertex3f(0.5*seat_length, seat_height, -seat_width);
+    glEnd();
+
+
+    glBegin(GL_POLYGON);
+      glVertex3f(0.1*seat_length, -seat_height, -0.5*seat_width);
+      glVertex3f( -seat_length, -seat_height, -0.3*seat_width);
+      glVertex3f( -seat_length, -seat_height,  0.3*seat_width);
+      glVertex3f(0.1*seat_length, -seat_height,  0.5*seat_width);
+      glVertex3f(0.5*seat_length, -seat_height,  seat_width);
+      glVertex3f(seat_length, -seat_height,  seat_width);
+      glVertex3f(seat_length, -seat_height, -seat_width);
+      glVertex3f(0.5*seat_length, -seat_height, -seat_width);
+    glEnd();
+
+
+   glBegin(GL_QUADS);
+      //1
+      glVertex3f( -seat_length,  seat_height, -0.3*seat_width);
+      glVertex3f( -seat_length,  seat_height,  0.3*seat_width);
+      glVertex3f( -seat_length, -seat_height,  0.3*seat_width);
+      glVertex3f( -seat_length, -seat_height, -0.3*seat_width);
+
+      //2
+      glVertex3f(  -seat_length,  seat_height, 0.3*seat_width);
+      glVertex3f( 0.1*seat_length,  seat_height, 0.5*seat_width);
+      glVertex3f( 0.1*seat_length, -seat_height, 0.5*seat_width);
+      glVertex3f(  -seat_length, -seat_height, 0.3*seat_width);
+
+      //3
+      glVertex3f( 0.1*seat_length,  seat_height, 0.5*seat_width);
+      glVertex3f( 0.5*seat_length,  seat_height, seat_width);
+      glVertex3f( 0.5*seat_length, -seat_height, seat_width);
+      glVertex3f( 0.1*seat_length, -seat_height, 0.5*seat_width);
+
+      //4
+      glVertex3f( 0.5*seat_length,  seat_height, seat_width);
+      glVertex3f( -seat_end,  seat_height, seat_width);
+      glVertex3f( -seat_end, -seat_height, seat_width);
+      glVertex3f( 0.5*seat_length, -seat_height, seat_width);
+
+      //5
+      glVertex3f(  -seat_end,  seat_height,  seat_width);
+      glVertex3f(  -seat_end,  seat_height, -seat_width);
+      glVertex3f(  -seat_end, -seat_height, -seat_width);
+      glVertex3f(  -seat_end, -seat_height,  seat_width);
+
+      //6
+      glVertex3f( 0.5*seat_length,  seat_height, -seat_width);
+      glVertex3f( -seat_end,  seat_height, -seat_width);
+      glVertex3f( -seat_end, -seat_height, -seat_width);
+      glVertex3f( 0.5f*seat_length, -seat_height, -seat_width);
+
+      //7
+      glVertex3f( 0.1*seat_length,  seat_height, -0.5*seat_width);
+      glVertex3f( 0.5*seat_length,  seat_height, -seat_width);
+      glVertex3f( 0.5*seat_length, -seat_height, -seat_width);
+      glVertex3f( 0.1*seat_length, -seat_height, -0.5*seat_width);
+
+      //8
+      glVertex3f( -seat_length,  seat_height, -0.3*seat_width);
+      glVertex3f( 0.1*seat_length,  seat_height, -0.5*seat_width);
+      glVertex3f( 0.1*seat_length, -seat_height, -0.5*seat_width);
+      glVertex3f( -seat_length, -seat_height, -0.3*seat_width);
+
+
+   glEnd();
+   glPopMatrix();
+
+    GLUquadricObj *quadratic;
+    quadratic = gluNewQuadric();
+
+    //support frame
+    glPushMatrix();
+    glRotatef(90,1.0,0.0,0.0);
+    gluCylinder(quadratic, r_seat , r_seat , 4*seat_height , 32 , 32 );
+    glPopMatrix();
+}
+
+void Seat::rotate(int x, int y, int z) {
+
 }

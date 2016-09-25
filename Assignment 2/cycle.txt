@@ -1,0 +1,65 @@
+FRAME PARAMETERS
+position of cycle and normal
+0 0 0 1
+0 0 1 1
+cycle width
+0.1
+cycle frame tube thickness
+0.05
+frame color
+1.0 0.0 0 1
+cycle height pedal to seat bottom
+0.8
+frame length - front wheel to pedal, pedal to back wheel
+1.2 1
+
+PEDAL PARAMETERS
+pedal colors - pedal color, shaft color
+0.0 0.0 0.0 1
+0.4 0.4 0.4 1
+pedal shaft length
+0.5
+pedal width
+0.3
+
+GEAR PARAMETERS
+number of spokes in the gear
+5
+gear radius
+0.2
+gear thickness
+0.01
+gear colors - rim color, spoke color
+0.4 0.4 0.4 1
+0.4 0.4 0.4 1
+
+CHAIN PARAMETERS
+chain color
+0 0 0 1
+chain segment radius
+0.02
+
+WHEEL PARAMETERS
+wheel colors - tire color, spoke color
+0 0 0 1
+1 1 1 1
+number of spokes in the wheel
+30
+thickness of the tire
+0.04
+radius of the wheel
+0.5
+
+HANDLE PARAMETERS
+handle colors - handle body color, grip color, handle frame color
+0.75 0.75 0.75 1.0
+0 0 0 1.0
+1 0 0 1
+handle dimensions - length of handle, length of handle grip, handle offset, handle angle
+1.5 0.4 0.4 77
+
+SEAT PARAMETERS
+seat dimensions - height of seat, length of seat, width of seat
+0.05 0.2 0.1
+seat color
+0 0 0 1

@@ -1,5 +1,6 @@
 #include "Objects.hpp"
 #include <fstream>
+#include <sstream>
 #include <string>
 
 // This class is the assembly of a cycle object
@@ -13,6 +14,7 @@ private:
   Wheel* back_gear;
   Chain* chain;
   Handle* handle;
+  Seat* seat;
 public:
   Cycle(string file_name);
   void render();

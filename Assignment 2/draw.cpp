@@ -79,40 +79,14 @@ void init(void)
   gluPerspective(100.0, 1.0, 1.0, 20.0);
 
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(0.0, 0.0, 2.0,  // eye is at (0,0,5)
+  gluLookAt(0.0, 0.0, 3.0,  // eye is at (0,0,5)
   0.0, 0.0, 0.0,      // center is at (0,0,0)
   0.0, 1.0, 0.0);      // up is in positive Y direction
 }
 
 int main(int argc, char **argv)
 {
-  // //Parent Node
-  // float pedal_position[2][4] = {
-  //   {0,0,0,1}, // centre position
-  //   {0,0,1,1}, // normal direction, Z direction
-  // };
-  // float wheel_position[2][4] = {
-  //   {0,0,0,1}, // centre position
-  //   {0,0,1,1}, // normal direction, Z direction
-  // };
-  // float wheel_colors[2][4] = {
-  //   {0.4, 0.4, 0.4, 1.0}, // tire color
-  //   {0.4, 0.4, 0.4, 1} // spoke color
-  // };
-  // float pedal_colors[2][4] = {
-  //   {0, 0, 0, 1.0}, // pedal color
-  //   {0.4, 0.4, 0.4, 1} // shaft color
-  // };
-  // float chain_color[4] = {1, 0, 0, 1};
-  // //node = new Wheel(wheel_position, wheel_colors, 40, 1, 0.07);
-  // //node = new Pedal(pedal_position, pedal_colors, 0.3, 0.5);
-  // //node2 = new Wheel(wheel_position, wheel_colors, 5, 0.1, 0.01);
-  // //node3 = new Chain(pedal_position, chain_color, 0.1, 0.03, 1.5);
-  // //node->add_child(node2);
-  // //node2->add_child(node3);
-  // float frame_len[2] = {1.5, 1};
-  // //node = new Frame(pedal_position, chain_color, 1, frame_len, 0.05);
-  cycle = new Cycle("arbit.txt");
+  cycle = new Cycle("cycle.txt");
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(640,640);

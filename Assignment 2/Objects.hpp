@@ -119,4 +119,18 @@ public:
   void rotate(int rotate_x, int rotate_y, int rotate_z);
 };
 
+class Seat: public BaseObject {
+private:
+  float* center;
+  float* seat_color;
+  float seat_height;
+  float seat_width;
+  float seat_length;
+  float r_seat;
+public:
+  Seat(float* seat_center, float* seat_color, float seat_dimension[4]);
+  void render();
+  void rotate(int rotate_x, int rotate_y, int rotate_z);
+};
+
 #endif
