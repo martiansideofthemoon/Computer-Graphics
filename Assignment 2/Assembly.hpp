@@ -16,6 +16,7 @@ private:
   Wheel* back_gear;
   Chain* chain;
   Handle* handle;
+  Brake* brake;
   Seat* seat;
   Rider* rider;
 public:

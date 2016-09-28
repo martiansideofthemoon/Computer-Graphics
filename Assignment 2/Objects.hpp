@@ -119,6 +119,20 @@ public:
   void rotate(int rotate_x, int rotate_y, int rotate_z);
 };
 
+class Brake: public BaseObject {
+private:
+  float* brake_center;
+  float* brake_color;
+  float length_of_brake;
+  float brake_angle;
+  float brake_thick;
+  float length_of_handle;
+public:
+  Brake(float* brake_center, float* brake_color, float brake_dimension[4]);
+  void render();
+  void rotate(int rotate_x, int rotate_y, int rotate_z);
+};
+
 class Seat: public BaseObject {
 private:
   float* center;

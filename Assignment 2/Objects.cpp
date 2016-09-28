@@ -421,7 +421,7 @@ void Frame::rotate(int rotate_x, int rotate_y, int rotate_z) {
 }
 
 // Functions of the Handle Class
-Handle::Handle(float* Handle_center , float handle_colors[][4], float handle_dimension[4]) {
+Handle::Handle(float* Handle_center , float handle_colors[][4], float handle_dimension[8]) {
   this->center = new float[4];
   this->ry = 0;
   vertexcopy(Handle_center,this->center);
@@ -445,7 +445,7 @@ void Handle::render() {
     float length_of_brake = 0.6f;
     float length_of_brake_support = 0.5f;
     float radius_of_handle = l_frame_thick/2;
-    float radius_of_hand_grip = 1.5*l_frame_thick/2;
+    float radius_of_hand_grip = 1.001*l_frame_thick/2;
     float radius_of_brake = 0.05f;
     float radius_of_brake_support = 0.07f;
 
@@ -484,26 +484,6 @@ void Handle::render() {
     gluCylinder(quadratic, radius_of_hand_grip , radius_of_hand_grip , length_of_grip , 32 , 32 );
     glPopMatrix();
 
-    //brake lever
-    // glPushMatrix();
-    // glTranslatef(handle_x,handle_y,1.2);
-    // glRotatef(-30, 0.0, 1.0, 0.0);
-    // glTranslatef(-0.1,0.1,0.0);
-    // gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
-    // glRotatef(30, 0.0, 1.0, 0.0);
-    // glTranslatef(-0.25,0.015,0.4);
-    // gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
-    // glPopMatrix();
-
-    // glPushMatrix();
-    // glTranslatef(handle_x-0.2,handle_y,-1.1);
-    // glRotatef(210, 0.0, 1.0, 0.0);
-    // glTranslatef(-0.1,0.1,0.0);
-    // gluCylinder(quadratic, radius_of_brake_support , radius_of_brake_support , length_of_brake_support , 32 , 32 );
-    // glRotatef(-210, 0.0, 1.0, 0.0);
-    // glTranslatef(-0.25,0.015,-1.0);
-    // gluCylinder(quadratic, radius_of_brake , radius_of_brake , length_of_brake , 32 , 32 );
-    // glPopMatrix();
 
     //45 degree pipe
     glColor3fv(handle_body_color);
@@ -576,6 +556,54 @@ void Handle::render() {
 }
 
 void Handle::rotate(int rotate_x, int rotate_y, int rotate_z) {
+  ry += 2*rotate_y;
+  while (ry > 360) ry -= 360;
+}
+
+
+// Functions of the brake Class
+Brake::Brake(float* brake_center , float* brake_color, float brake_dimension[4]) {
+  this->brake_center = new float[4];
+  vertexcopy(brake_center,this->brake_center);
+  this->brake_color = new float[4];
+  vertexcopy(brake_color, this->brake_color);
+  this->length_of_brake = brake_dimension[0]; //depends on length_of_brake
+  this->brake_angle = brake_dimension[1];          //depends on brake_angle
+  this->brake_thick = brake_dimension[2];  //depends on brake_thick
+  this->length_of_handle = brake_dimension[3];  //depends on length_of_handle
+
+}
+
+void Brake::render() {
+    //brake lever
+    glTranslatef(brake_center[0],brake_center[1],brake_center[2]);
+    //glRotatef(ry, 0.0, 1.0, 0.0);
+    glColor3fv(brake_color);
+    GLUquadricObj *quadratic;
+    quadratic = gluNewQuadric();
+
+    glPushMatrix();
+    glTranslatef( -length_of_brake*sin(PI*brake_angle/180), 0, -length_of_handle/4 );
+    glRotatef(  brake_angle, 0.0, 1.0, 0.0);
+    gluCylinder(quadratic, brake_thick , brake_thick , length_of_brake , 32 , 32 );
+    glRotatef( 180 - brake_angle, 0.0, 1.0, 0.0);
+    glTranslatef(0,0,-0.01);
+    gluCylinder(quadratic, brake_thick , brake_thick , 2*length_of_brake , 32 , 32 );
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef( -length_of_brake*sin(PI*brake_angle/180), 0, length_of_handle/4 );
+    glRotatef(180 - brake_angle, 0.0, 1.0, 0.0);
+    gluCylinder(quadratic, brake_thick , brake_thick , length_of_brake , 32 , 32 );
+    glRotatef(180 + brake_angle, 0.0, 1.0, 0.0);
+    glTranslatef(0,0,-0.01);
+    gluCylinder(quadratic, brake_thick , brake_thick , 2*length_of_brake , 32 , 32 );
+    glPopMatrix();
+}
+
+
+
+void Brake::rotate(int rotate_x, int rotate_y, int rotate_z) {
   ry += 2*rotate_y;
   while (ry > 360) ry -= 360;
 }

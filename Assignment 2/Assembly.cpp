@@ -272,6 +272,32 @@ Cycle::Cycle(string file_name) {
   frame->add_child(handle);
   handle->add_child(front_wheel);
 
+  // Brake Parameters
+  getline(myfile, line);
+  getline(myfile, line);
+
+  float brake_center[4] = {-handle_dimension[6]*cos(PI*handle_dimension[7]/180) , handle_dimension[6]*sin(PI*handle_dimension[7]/180), 0, 1.0}; // centre position
+   //float brake_center[4] = {0, 0.0, 0, 1.0}; // centre position
+
+  // brake colors
+  getline(myfile, line);
+  getline(myfile, line);
+  iss = new istringstream(line);
+  float brake_color[4];
+  *iss >> brake_color[0] >> brake_color[1] >> brake_color[2] >> brake_color[3];
+  delete iss;
+
+  // brake dimensions
+  getline(myfile, line);
+  getline(myfile, line);
+  iss = new istringstream(line);
+  float brake_dimension[4] = {0, 0, 0, 0}; //length of brake, angle of brake, brake thickness, handle length
+  *iss >> brake_dimension[0] >> brake_dimension[1] >> brake_dimension[2] >> brake_dimension[3];
+  delete iss;
+
+  brake = new Brake(brake_center, brake_color, brake_dimension);
+  handle->add_child(brake);
+
   // Seat Parameters
   getline(myfile, line);
   getline(myfile, line);

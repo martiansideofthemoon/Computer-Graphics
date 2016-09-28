@@ -58,6 +58,12 @@ handle colors - handle body color, grip color, handle frame color
 handle dimensions - length of handle, length of handle grip, handle offset, handle angle
 1.5 0.4 0.4 77
 
+BRAKE PARAMETERS
+brake color
+0 1 0 1.0
+brake dimensions - length of brake, angle of brake, brake thickness, length of handle
+0.15 30 0.02 1.5
+
 SEAT PARAMETERS
 seat dimensions - height of seat, length of seat, width of seat
 0.05 0.2 0.1
