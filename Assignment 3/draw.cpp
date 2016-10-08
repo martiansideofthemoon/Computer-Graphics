@@ -65,8 +65,32 @@ void processSpecialKeys(int key, int x, int y) {
 
 void display(void)
 {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glClearColor(0,191.0/255,1,1);
+  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+   GLfloat mat_shininess[] = { 50.0 };
+   GLfloat spotlight_cutoff[] = { 180.0 };
+   //GLfloat light_position[] = { 0.0, 1.0, 0.0, 0.0 };
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glClearColor (0.0, 0.0, 0.0, 0.0);
+   glShadeModel (GL_SMOOTH);
+
+   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+   GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+    GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat light_position[] = { 0.0, 2.0, 1.0, 1.0 };
+GLfloat spotlight_direction[] = { 0.0, -1.0, 0.0, 1.0 };
+
+//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);
+glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+  //glClearColor(0,0,0,1);
   cycle->render();
   glutSwapBuffers();
 }
@@ -88,7 +112,6 @@ void init(void)
 
 int main(int argc, char **argv)
 {
-  cout << "yolo" << endl;
   cycle = new Cycle("cycle.txt");
   cycle->turn(30);
   glutInit(&argc, argv);
