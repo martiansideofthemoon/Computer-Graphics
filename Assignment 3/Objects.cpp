@@ -408,7 +408,7 @@ void Frame::render() {
   glPopMatrix();
 }
 
-void Frame::translate(int x, int y, int z) {
+void Frame::translate(float x, float y, float z) {
   center[0] += x;
   center[1] += y;
   center[2] += z;

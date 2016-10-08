@@ -2,6 +2,10 @@
 
 Cycle::Cycle(string file_name) {
   phase = 0;
+  this->handle_angle = 0;
+  this->angle_rotated = 0;
+  this->cycle_direction[0] = -1;
+  this->cycle_direction[1] = 0;
   // Make the cycle by reading from a file
   string line;
   ifstream myfile(file_name.c_str());
@@ -67,6 +71,8 @@ Cycle::Cycle(string file_name) {
   iss = new istringstream(line);
   float frame_length[2];
   *iss >> frame_length[0] >> frame_length[1];
+  this->front_length = frame_length[0];
+  this->back_length = frame_length[1];
   delete iss;
 
   // Frame parameters
@@ -222,6 +228,7 @@ Cycle::Cycle(string file_name) {
   iss = new istringstream(line);
   float wheel_radius;
   *iss >> wheel_radius;
+  this->wheel_radius = wheel_radius;
   delete iss;
 
   // Assembling the wheel
@@ -383,15 +390,36 @@ void Cycle::pedal_cycle(int angle) {
   front_wheel->rotate(0,0,angle);
   back_wheel->rotate(0,0,angle);
   rider->bend_leg(phase, this->pedal_shaft);
+
+  float distance = wheel_radius*angle*PI/180;
+  float length = front_length + back_length;
+  float add_angle = handle_angle - (180.0/PI)*asin(sin(handle_angle*PI/180.0)*(length - distance) / length);
+
+  frame->translate(cycle_direction[0]*distance, 0, cycle_direction[1]*distance);
+  cycle_direction[0] = cycle_direction[0]*cos(add_angle*PI/180) + cycle_direction[1]*sin(add_angle*PI/180);
+  cycle_direction[1] = cycle_direction[1]*cos(add_angle*PI/180) - cycle_direction[0]*sin(add_angle*PI/180);
+
+  angle_rotated += add_angle;
+  while (angle_rotated > 1) {
+    frame->rotate(0, 1, 0);
+    angle_rotated -= 1;
+  }
+  while (angle_rotated < -1) {
+    frame->rotate(0, -1, 0);
+    angle_rotated += 1;
+  }
+
 }
 
 void Cycle::move_to(float x, float y, float z) {
   // Move cycle to specific point
+  
 }
 
 void Cycle::turn(int angle) {
   // Turn the cycle with respect to up vector
   handle->rotate(0,angle,0);
+  this->handle_angle += angle;
 }
 
 Room::Room(string file_name) {
@@ -403,6 +431,7 @@ Room::Room(string file_name) {
   float position = -0.57;
 
   float surface_color[4] = {1, 1, 1, 1};
+  float floor_color[4] = {139.0/256, 69.0/256, 19.0/256, 1};
 
   float floor_pos[2][4] = {
     {0, position, 0, 1},
@@ -411,7 +440,7 @@ Room::Room(string file_name) {
   float bottom_width = room_width;
   float bottom_height = room_depth;
   int bottom_detail = 200;
-  bottom = new Surface(floor_pos, surface_color, bottom_width, bottom_height, detail);
+  bottom = new Surface(floor_pos, floor_color, bottom_width, bottom_height, detail);
   room->add_child(bottom);
 
   float ceil_pos[2][4] = {

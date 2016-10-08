@@ -15,7 +15,7 @@ class BaseObject {
 public:
   std::vector<BaseObject*> children;
   BaseObject* parent;
-  int rx, ry, rz;
+  float rx, ry, rz;
 
   BaseObject();
   void add_child(BaseObject*);
@@ -96,7 +96,7 @@ public:
         float cycle_width);
   void render();
   void rotate(int rotate_x, int rotate_y, int rotate_z);
-  void translate(int x, int y, int z);
+  void translate(float x, float y, float z);
 };
 
 class Handle: public BaseObject {

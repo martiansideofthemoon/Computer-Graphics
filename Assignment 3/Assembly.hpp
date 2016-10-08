@@ -8,6 +8,12 @@ class Cycle {
 private:
   int phase;
   float pedal_shaft;
+  float wheel_radius;
+  float handle_angle;
+  float front_length;
+  float back_length;
+  float angle_rotated;
+  float cycle_direction[2];
   Frame* frame;
   Wheel* front_wheel;
   Wheel* back_wheel;
