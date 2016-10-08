@@ -167,4 +167,18 @@ public:
   void rotate(int rotate_x, int rotate_y, int rotate_z);
 };
 
+class Surface: public BaseObject {
+private:
+  float* center;
+  float* normal;
+  float* surface_color;
+  float width;
+  float height;
+  int detail; // An integer value from 1
+public:
+  Surface(float surface_position[][4], float surface_color[4], float width, float height, int detail);
+  void render();
+  void rotate(int rotate_x, int rotate_y, int rotate_z);
+};
+
 #endif

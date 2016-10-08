@@ -7,6 +7,7 @@
 using namespace std;
 
 Cycle* cycle;
+Room* room;
 BaseObject *node;
 BaseObject *node2;
 BaseObject *node3;
@@ -76,9 +77,9 @@ void display(void)
    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
    GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-    GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+    GLfloat light_diffuse[] = { 1, 1, 0.2, 1.0 };
 GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light_position[] = { 0.0, 2.0, 1.0, 1.0 };
+GLfloat light_position[] = { 0.0, 2.0, 0.0, 1.0 };
 GLfloat spotlight_direction[] = { 0.0, -1.0, 0.0, 1.0 };
 
 //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
@@ -92,6 +93,7 @@ glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);
    glEnable(GL_LIGHT0);
   //glClearColor(0,0,0,1);
   cycle->render();
+  room->render();
   glutSwapBuffers();
 }
 
@@ -105,7 +107,7 @@ void init(void)
   gluPerspective(100.0, 1.0, 1.0, 20.0);
 
   glMatrixMode(GL_MODELVIEW);
-  gluLookAt(0.0, 0.0, 2.5,  // eye is at (0,0,5)
+  gluLookAt(0.0, 1.0, 4.5,  // eye is at (0,0,5)
   0.0, 0.0, 0.0,      // center is at (0,0,0)
   0.0, 1.0, 0.0);      // up is in positive Y direction
 }
@@ -114,6 +116,7 @@ int main(int argc, char **argv)
 {
   cycle = new Cycle("cycle.txt");
   cycle->turn(30);
+  room = new Room("room.txt");
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(640,640);

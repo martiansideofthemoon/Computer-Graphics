@@ -27,3 +27,18 @@ public:
   void move_to(float x, float y, float z);
   void turn(int angle);
 };
+
+// This class is the assembly of the room object
+class Room {
+private:
+  BaseObject* room;
+  Surface* bottom;
+  Surface* left_wall;
+  Surface* right_wall;
+  Surface* back_wall;
+  Surface* front_wall;
+  Surface* ceiling;
+public:
+  Room(string file_name);
+  void render();
+};

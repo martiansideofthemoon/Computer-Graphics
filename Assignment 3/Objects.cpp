@@ -798,3 +798,52 @@ void Rider::bend_leg(int pedal_angle, float pedal_shaft) {
   thigh_angle2 = -1*(phi + beta);
   leg_angle2 = 180 - alpha - beta - phi;
 }
+
+// Functions of the Surface Class
+Surface::Surface(float surface_position[][4], float surface_color[4], float width, float height, int detail) {
+  this->center = new float[4];
+  vertexcopy(surface_position[0], this->center);
+  this->normal = new float[4];
+  vertexcopy(surface_position[1], this->normal);
+  // Normalizing the normal vector
+  float magnitude = sqrt(normal[0]*normal[0]+normal[1]*normal[1]+normal[2]*normal[2]);
+  normal[0] /= magnitude;
+  normal[1] /= magnitude;
+  normal[2] /= magnitude;
+
+  this->width = width;
+  this->height = height;
+  this->detail = detail;
+  this->surface_color = new float[4];
+  vertexcopy(surface_color, this->surface_color);
+}
+
+void Surface::render() {
+  glTranslatef(center[0], center[1], center[2]);
+  float rotation_angle = acos(normal[2])*180.0/PI;
+  glRotatef(rotation_angle, -1*normal[1], normal[0], 0);
+
+  // rendering the tires
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, surface_color);
+  //glColor3fv(surface_color);
+  float quad_width = width / detail;
+  float quad_height = height / detail;
+  glPushMatrix();
+    glBegin(GL_QUADS);
+    for (int j = 0; j < detail; j++) {
+      for (int i = 0; i < detail; i++) {
+        glNormal3f(0, 0, 1.0);
+        glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + j*quad_height, 0);
+        glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + j*quad_height, 0);
+        glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + (j+1)*quad_height, 0);
+        glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + (j+1)*quad_height, 0);
+      }
+    }
+    glEnd();
+  glPopMatrix();
+
+}
+
+void Surface::rotate(int rotate_x, int rotate_y, int rotate_z) {
+  // Can't be rotated independently
+}

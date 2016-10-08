@@ -393,3 +393,74 @@ void Cycle::turn(int angle) {
   // Turn the cycle with respect to up vector
   handle->rotate(0,angle,0);
 }
+
+Room::Room(string file_name) {
+  room = new BaseObject();
+  int detail = 100;
+  float room_height = 4;
+  float room_width = 8;
+  float room_depth = 8;
+  float position = -0.57;
+
+  float surface_color[4] = {1, 1, 1, 1};
+
+  float floor_pos[2][4] = {
+    {0, position, 0, 1},
+    {0, 1, 0, 1}
+  };
+  float bottom_width = room_width;
+  float bottom_height = room_depth;
+  int bottom_detail = 200;
+  bottom = new Surface(floor_pos, surface_color, bottom_width, bottom_height, detail);
+  room->add_child(bottom);
+
+  float ceil_pos[2][4] = {
+    {0, room_height + position, 0, 1},
+    {0, -1, 0, 1}
+  };
+  float ceil_width = room_width;
+  float ceil_height = room_depth;
+  ceiling = new Surface(ceil_pos, surface_color, ceil_width, ceil_height, detail);
+  room->add_child(ceiling);
+
+  float left_pos[2][4] = {
+    {-1*room_width / 2, room_height/2 + position, 0, 1},
+    {1, 0, 0, 1}
+  };
+  float left_width = room_depth;
+  float left_height = room_height;
+  left_wall = new Surface(left_pos, surface_color, left_width, left_height, detail);
+  room->add_child(left_wall);
+
+  float right_pos[2][4] = {
+    {room_width / 2, room_height/2 + position, 0, 1},
+    {-1, 0, 0, 1}
+  };
+  float right_width = room_depth;
+  float right_height = room_height;
+  right_wall = new Surface(right_pos, surface_color, right_width, right_height, detail);
+  room->add_child(right_wall);
+
+  float back_pos[2][4] = {
+    {0, room_height/2 + position, -1*room_depth/2, 1},
+    {0, 0, 1, 1}
+  };
+  float back_width = room_width;
+  float back_height = room_height;
+  back_wall = new Surface(back_pos, surface_color, back_width, back_height, detail);
+  room->add_child(back_wall);
+
+  float front_pos[2][4] = {
+    {0, room_height/2 + position, room_depth/2, 1},
+    {0, 0, -1, 1}
+  };
+  float front_width = room_width;
+  float front_height = room_height;
+  front_wall = new Surface(front_pos, surface_color, front_width, front_height, detail);
+  room->add_child(front_wall);
+
+}
+
+void Room::render() {
+  room->render_tree();
+}
