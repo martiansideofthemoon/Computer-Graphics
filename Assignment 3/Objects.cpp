@@ -75,7 +75,7 @@ void BaseObject::render_tree() {
   glPopMatrix();
 }
 
-void BaseObject::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void BaseObject::rotate(float rotate_x, float rotate_y, float rotate_z) {
   // Each object has its own rotation scheme. This is the general rotation scheme
   rx += rotate_x;
   while (rx > 360) rx -= 360;
@@ -137,7 +137,7 @@ void Wheel::render() {
   }
 }
 
-void Wheel::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Wheel::rotate(float rotate_x, float rotate_y, float rotate_z) {
   angle += rotate_z;
   while(angle > 360) angle -= 360;
   while(angle < 0) angle += 360;
@@ -216,7 +216,7 @@ void Pedal::render() {
 
 }
 
-void Pedal::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Pedal::rotate(float rotate_x, float rotate_y, float rotate_z) {
   angle += rotate_z;
   while(angle > 360) angle -= 360;
   while(angle < 0) angle += 360;
@@ -316,7 +316,7 @@ void Chain::render() {
   }
 }
 
-void Chain::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Chain::rotate(float rotate_x, float rotate_y, float rotate_z) {
   angle += rotate_z;
   while(angle > 180) angle -= 180;
   while(angle < 0) angle += 180;
@@ -414,7 +414,7 @@ void Frame::translate(float x, float y, float z) {
   center[2] += z;
 }
 
-void Frame::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Frame::rotate(float rotate_x, float rotate_y, float rotate_z) {
   rx += rotate_x;
   while (rx > 360) rx -= 360;
   ry += rotate_y;
@@ -424,6 +424,13 @@ void Frame::rotate(int rotate_x, int rotate_y, int rotate_z) {
   while (rx < 0) rx += 360;
   while (ry < 0) ry += 360;
   while (rz < 0) rz += 360;
+}
+
+float* Frame::get_direction() {
+  float* direction = new float[2];
+  direction[0] = -1*cos(ry*PI/180);
+  direction[1] = sin(ry*PI/180);
+  return direction;
 }
 
 // Functions of the Handle Class
@@ -501,6 +508,13 @@ void Handle::render() {
     gluCylinder(quadratic, l_frame_thick/2, l_frame_thick/2, handle_offset, 32, 32 );
     glPopMatrix();
 
+    gluQuadricOrientation(quadratic, GLU_INSIDE);
+    glPushMatrix();
+    glRotatef(-90, 0.0, 1.0, 0.0);
+    gluCylinder(quadratic, l_frame_thick/2, l_frame_thick*1.2, handle_offset/2, 32, 32 );
+    glPopMatrix();
+
+    gluQuadricOrientation(quadratic, GLU_OUTSIDE);
     //vertical pipe
     glPushMatrix();
     glRotatef(90, 1.0, 0.0, 0.0);
@@ -538,9 +552,13 @@ void Handle::render() {
     glPopMatrix();
 }
 
-void Handle::rotate(int rotate_x, int rotate_y, int rotate_z) {
-  ry += 2*rotate_y;
+void Handle::rotate(float rotate_x, float rotate_y, float rotate_z) {
+  ry += rotate_y;
   while (ry > 360) ry -= 360;
+}
+
+int Handle::get_angle() {
+  return ry;
 }
 
 
@@ -587,7 +605,7 @@ void Brake::render() {
 
 
 
-void Brake::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Brake::rotate(float rotate_x, float rotate_y, float rotate_z) {
   ry += 2*rotate_y;
   while (ry > 360) ry -= 360;
 }
@@ -698,7 +716,7 @@ void Seat::render() {
     glPopMatrix();
 }
 
-void Seat::rotate(int x, int y, int z) {
+void Seat::rotate(float rotate_x, float rotate_y, float rotate_z) {
   // Nothing to be done here
 }
 
@@ -775,7 +793,7 @@ void Rider::render() {
   glPopMatrix();
 }
 
-void Rider::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Rider::rotate(float rotate_x, float rotate_y, float rotate_z) {
 
 }
 
@@ -844,6 +862,6 @@ void Surface::render() {
 
 }
 
-void Surface::rotate(int rotate_x, int rotate_y, int rotate_z) {
+void Surface::rotate(float rotate_x, float rotate_y, float rotate_z) {
   // Can't be rotated independently
 }

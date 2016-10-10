@@ -1,11 +1,13 @@
 #include "Assembly.hpp"
 
+void rotate_vector(float* vec, float angle) {
+  float a1 = cos(angle*PI/180)*vec[0] + sin(angle*PI/180)*vec[1];
+  vec[1] = -1*sin(angle*PI/180)*vec[0] + cos(angle*PI/180)*vec[1];
+  vec[0] = a1;
+}
+
 Cycle::Cycle(string file_name) {
   phase = 0;
-  this->handle_angle = 0;
-  this->angle_rotated = 0;
-  this->cycle_direction[0] = -1;
-  this->cycle_direction[1] = 0;
   // Make the cycle by reading from a file
   string line;
   ifstream myfile(file_name.c_str());
@@ -71,8 +73,6 @@ Cycle::Cycle(string file_name) {
   iss = new istringstream(line);
   float frame_length[2];
   *iss >> frame_length[0] >> frame_length[1];
-  this->front_length = frame_length[0];
-  this->back_length = frame_length[1];
   delete iss;
 
   // Frame parameters
@@ -100,7 +100,6 @@ Cycle::Cycle(string file_name) {
   iss = new istringstream(line);
   float pedal_length;
   *iss >> pedal_length;
-  this->pedal_shaft = pedal_length;
   delete iss;
 
   // fetching pedal shaft width
@@ -228,7 +227,6 @@ Cycle::Cycle(string file_name) {
   iss = new istringstream(line);
   float wheel_radius;
   *iss >> wheel_radius;
-  this->wheel_radius = wheel_radius;
   delete iss;
 
   // Assembling the wheel
@@ -368,6 +366,31 @@ Cycle::Cycle(string file_name) {
   rider = new Rider(rider_position, rider_color, rider_width, rider_thigh, rider_leg);
   rider->bend_leg(0, pedal_length);
   frame->add_child(rider);
+
+  generate_headlight();
+  adjust_headlight();
+}
+
+void Cycle::generate_headlight() {
+    // Headlight code -->
+  GLfloat spotlight_cutoff[] = { 30.0 };
+  GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat light_diffuse[] = { 1, 1, 0.2, 1.0 };
+  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
+  glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, spotlight_cutoff);
+}
+
+void Cycle::adjust_headlight() {
+  float* cycle_direction = frame->get_direction();
+  GLfloat light_position[] = {frame->center[0]+cycle_direction[0]*(frame->front_len), frame->center[1]+frame->height, frame->center[2]+cycle_direction[1]*frame->front_len, 1.0 };
+  rotate_vector(cycle_direction, handle->get_angle());
+  GLfloat spotlight_direction[] = {cycle_direction[0], -0, cycle_direction[1], 1.0 };
+  glLightfv(GL_LIGHT1, GL_POSITION, light_position);
+  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlight_direction);
+  delete[] cycle_direction;
 }
 
 void Cycle::render() {
@@ -387,28 +410,20 @@ void Cycle::pedal_cycle(int angle) {
   pedal->rotate(0,0,angle);
   chain->rotate(0,0,angle);
   back_gear->rotate(0,0,angle);
-  front_wheel->rotate(0,0,angle);
+  front_wheel->rotate(0,0, angle);
   back_wheel->rotate(0,0,angle);
-  rider->bend_leg(phase, this->pedal_shaft);
+  rider->bend_leg(phase, pedal->length);
 
-  float distance = wheel_radius*angle*PI/180;
-  float length = front_length + back_length;
-  float add_angle = handle_angle - (180.0/PI)*asin(sin(handle_angle*PI/180.0)*(length - distance) / length);
+  float distance = front_wheel->radius*angle*PI/180;
+  float length = frame->front_len + frame->back_len;
+  float handle_angle = handle->get_angle();
+  float* cycle_direction = frame->get_direction();
+  float angle_rotated = handle_angle - (180.0/PI)*asin(sin(handle_angle*PI/180.0)*(length - distance) / length);
 
   frame->translate(cycle_direction[0]*distance, 0, cycle_direction[1]*distance);
-  cycle_direction[0] = cycle_direction[0]*cos(add_angle*PI/180) + cycle_direction[1]*sin(add_angle*PI/180);
-  cycle_direction[1] = cycle_direction[1]*cos(add_angle*PI/180) - cycle_direction[0]*sin(add_angle*PI/180);
-
-  angle_rotated += add_angle;
-  while (angle_rotated > 1) {
-    frame->rotate(0, 1, 0);
-    angle_rotated -= 1;
-  }
-  while (angle_rotated < -1) {
-    frame->rotate(0, -1, 0);
-    angle_rotated += 1;
-  }
-
+  delete[] cycle_direction;
+  frame->rotate(0, angle_rotated, 0);
+  adjust_headlight();
 }
 
 void Cycle::move_to(float x, float y, float z) {
@@ -418,8 +433,8 @@ void Cycle::move_to(float x, float y, float z) {
 
 void Cycle::turn(int angle) {
   // Turn the cycle with respect to up vector
-  handle->rotate(0,angle,0);
-  this->handle_angle += angle;
+  handle->rotate(0, angle, 0);
+  adjust_headlight();
 }
 
 Room::Room(string file_name) {

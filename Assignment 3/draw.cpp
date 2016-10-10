@@ -8,9 +8,6 @@ using namespace std;
 
 Cycle* cycle;
 Room* room;
-BaseObject *node;
-BaseObject *node2;
-BaseObject *node3;
 int curr=0; //Index of current oprational node
 
 //Our function for processing ASCII keys
@@ -31,6 +28,20 @@ void processNormalKeys(unsigned char key, int x, int y) {
     case 'w':
     case 'W':
       cycle->rotate(-1, 0, 0);
+      break;
+    case 'l':
+    case 'L':
+      if (glIsEnabled(GL_LIGHT0))
+        glDisable(GL_LIGHT0);
+      else
+        glEnable(GL_LIGHT0);
+      break;
+    case 'h':
+    case 'H':
+      if (glIsEnabled(GL_LIGHT1))
+        glDisable(GL_LIGHT1);
+      else
+        glEnable(GL_LIGHT1);
       break;
   }
   if (key == 27)
@@ -66,31 +77,11 @@ void processSpecialKeys(int key, int x, int y) {
 
 void display(void)
 {
-  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-   GLfloat mat_shininess[] = { 50.0 };
-   GLfloat spotlight_cutoff[] = { 180.0 };
+
    //GLfloat light_position[] = { 0.0, 1.0, 0.0, 0.0 };
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glClearColor (0.0, 0.0, 0.0, 0.0);
-   glShadeModel (GL_SMOOTH);
 
-   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-   GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-    GLfloat light_diffuse[] = { 1, 1, 0.2, 1.0 };
-GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light_position[] = { 0.0, 2.0, 0.0, 1.0 };
-GLfloat spotlight_direction[] = { 0.0, -1.0, 0.0, 1.0 };
-
-//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);
-glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);
-
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
   //glClearColor(0,0,0,1);
   cycle->render();
   room->render();
@@ -110,13 +101,32 @@ void init(void)
   gluLookAt(0.0, 1.0, 4.5,  // eye is at (0,0,5)
   0.0, 0.0, 0.0,      // center is at (0,0,0)
   0.0, 1.0, 0.0);      // up is in positive Y direction
+  glShadeModel (GL_SMOOTH);
+
+  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat mat_shininess[] = { 50.0 };
+  GLfloat spotlight_cutoff[] = { 180.0 };
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat light_position[] = { 0.0, 2.0, 0.0, 1.0 };
+  GLfloat spotlight_direction[] = { 0.0, -1.0, 0.0, 1.0 };
+
+  //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);
+  glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
 }
 
 int main(int argc, char **argv)
 {
-  cycle = new Cycle("cycle.txt");
-  cycle->turn(30);
-  room = new Room("room.txt");
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(640,640);
@@ -125,6 +135,9 @@ int main(int argc, char **argv)
   glutKeyboardFunc(processNormalKeys);
   glutSpecialFunc(processSpecialKeys);
   init();
+  cycle = new Cycle("cycle.txt");
+  cycle->turn(30);
+  room = new Room("room.txt");
   glutMainLoop();
   return 0;
 }

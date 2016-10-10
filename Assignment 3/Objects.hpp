@@ -21,51 +21,51 @@ public:
   void add_child(BaseObject*);
   virtual void render();
   void render_tree();
-  virtual void rotate(int rotate_x, int rotate_y, int rotate_z);
+  virtual void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 class Wheel: public BaseObject {
 private:
   float* center;
   float* normal;
-  int angle;
+  float angle;
   int spokes;
-  float radius;
   float tire_width;
   float* tire_color;
   float* spoke_color;
 public:
+  float radius;
   Wheel(float wheel_position[][4], float wheel_colors[][4], int spokes, float radius, float tire_width);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 class Pedal: public BaseObject {
 private:
   float* center;
   float* normal;
-  int angle;
+  float angle;
   float width;
-  float length;
   float pedal_separation;
   float pedal_height;
   float* pedal_color;
   float* shaft_color;
 public:
+  float length;
   Pedal(float pedal_position[][4],
         float pedal_colors[][4],
         float width,
         float length,
         float pedal_separation);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 class Chain: public BaseObject {
 private:
   float* center;
   float* normal;
-  int angle;
+  float angle;
   float radius;
   float length;
   float* chain_color;
@@ -74,20 +74,20 @@ private:
 public:
   Chain(float chain_position[][4], float chain_color[4], float radius, float segment_radius, float length);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 class Frame: public BaseObject {
 private:
-  float* center;
   float* normal;
-  float height;
-  float front_len;
-  float back_len;
   float* frame_color;
   float thickness;
   float cycle_width;
 public:
+  float* center;
+  float height;
+  float front_len;
+  float back_len;
   Frame(float frame_position[][4],
         float frame_color[4],
         float height,
@@ -95,8 +95,9 @@ public:
         float thickness,
         float cycle_width);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
   void translate(float x, float y, float z);
+  float* get_direction();
 };
 
 class Handle: public BaseObject {
@@ -116,7 +117,8 @@ private:
 public:
   Handle(float* Handle_center, float handle_colors[][4], float handle_dimension[8]);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
+  int get_angle();
 };
 
 class Brake: public BaseObject {
@@ -130,7 +132,7 @@ private:
 public:
   Brake(float* brake_center, float* brake_color, float brake_dimension[4]);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 class Seat: public BaseObject {
@@ -144,7 +146,7 @@ private:
 public:
   Seat(float* seat_center, float* seat_color, float seat_dimension[4]);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 
@@ -164,7 +166,7 @@ public:
   Rider(float rider_position[][4], float rider_color[4], float width, float thigh, float leg);
   void render();
   void bend_leg(int pedal_angle, float pedal_shaft);
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 class Surface: public BaseObject {
@@ -178,7 +180,7 @@ private:
 public:
   Surface(float surface_position[][4], float surface_color[4], float width, float height, int detail);
   void render();
-  void rotate(int rotate_x, int rotate_y, int rotate_z);
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
 };
 
 #endif
