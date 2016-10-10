@@ -850,22 +850,83 @@ void Surface::render() {
   //glColor3fv(surface_color);
   float quad_width = width / detail;
   float quad_height = height / detail;
+  if (normal[1] == 1) {
+    glEnable(GL_TEXTURE_2D);
+  }
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  GLuint texture = LoadTexture("bricks.bmp", 256, 256);
+
   glPushMatrix();
     glBegin(GL_QUADS);
     for (int j = 0; j < detail; j++) {
       for (int i = 0; i < detail; i++) {
         glNormal3f(0, 0, 1);
+        glTexCoord2f(1.0*i/detail, 1.0*j/detail);
         glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + j*quad_height, 0);
+        glTexCoord2f(1.0*(i+1)/detail, 1.0*j/detail);
         glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + j*quad_height, 0);
+        glTexCoord2f(1.0*(i+1)/detail, 1.0*(j+1)/detail);
         glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + (j+1)*quad_height, 0);
+        glTexCoord2f(1.0*i/detail, 1.0*(j+1)/detail);
         glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + (j+1)*quad_height, 0);
       }
     }
     glEnd();
+    glDisable(GL_TEXTURE_2D);
   glPopMatrix();
 
 }
 
 void Surface::rotate(float rotate_x, float rotate_y, float rotate_z) {
   // Can't be rotated independently
+}
+
+GLuint LoadTexture(const char * filename, int width, int height)
+{
+    GLuint texture;
+    unsigned char header[54];// 54 Byte header of BMP
+    int pos;
+    unsigned int w,h;
+    unsigned int size; //w*h*3
+    unsigned char * data; // Data in RGB FORMAT
+    FILE * file;
+
+    file = fopen( filename, "rb" );
+    if ( file == NULL ) return 0;  // if file is empty
+    if (fread(header,1,54,file)!=54){
+        printf("Incorrect BMP file\n");
+        return 0;
+    }
+
+    // Read  MetaData
+    pos = *(int*)&(header[0x0A]);
+    size = *(int*)&(header[0x22]);
+    w = *(int*)&(header[0x12]);
+    h = *(int*)&(header[0x16]);
+
+    //Just in case metadata is missing
+    if(size == 0)
+      size = w*h*3;
+    if(pos == 0)
+      pos = 54;
+
+    data = new unsigned char [size];
+
+    fread( data, size, 1, file ); // read the file
+    fclose( file );
+    //////////////////////////
+
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+
+    free( data );
+    return texture;// return the texture id
 }

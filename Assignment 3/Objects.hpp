@@ -1,6 +1,7 @@
 #include <iostream>
 #include <GL/glut.h>
 #include <vector>
+#include <fstream>
 #include <math.h>
 using namespace std;
 #define PI 3.14159265
@@ -9,6 +10,7 @@ using namespace std;
 #define _OBJECTS_HPP_
 
 void vertexcopy(float *src,float *dest);
+GLuint LoadTexture(const char * filename, int width, int height);
 
 // A simple class that represents a node in the hierarchy tree
 class BaseObject {
