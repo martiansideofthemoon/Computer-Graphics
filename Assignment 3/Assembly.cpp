@@ -443,11 +443,15 @@ void Cycle::use_camera(int mode) {
   if (mode == 0) {
     // first person
     glLoadIdentity();
-    gluLookAt(frame->center[0] + 0.5*cycle_direction[0]*frame->front_len, frame->center[1] + frame->height*2.5, frame->center[2] + 0.5*cycle_direction[1]*frame->front_len,
+    gluLookAt(frame->center[0], frame->center[1] + frame->height*2.5, frame->center[2],
     frame->center[0] + cycle_direction[0]*frame->front_len, frame->center[1] + frame->height, frame->center[2] + cycle_direction[1]*frame->front_len,      // center is at (0,0,0)
     0.0, 1.0, 0.0);      // up is in positive Y direction
   } else if (mode == 1) {
-
+    // first person
+    glLoadIdentity();
+    gluLookAt(frame->center[0] - 3*cycle_direction[0]*frame->back_len, frame->center[1] + frame->height*4, frame->center[2] - 3*cycle_direction[1]*frame->back_len,
+    frame->center[0] + cycle_direction[0]*frame->front_len, frame->center[1] + frame->height, frame->center[2] + cycle_direction[1]*frame->front_len,      // center is at (0,0,0)
+    0.0, 1.0, 0.0);      // up is in positive Y direction
   } else {
     // do nothing
   }

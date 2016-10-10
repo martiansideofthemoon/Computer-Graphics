@@ -16,6 +16,9 @@ void processNormalKeys(unsigned char key, int x, int y) {
     case '1':
       cycle->use_camera(0);
       break;
+    case '2':
+      cycle->use_camera(1);
+      break;
     case '3':
       room->use_camera();
       cycle->use_camera(2);
