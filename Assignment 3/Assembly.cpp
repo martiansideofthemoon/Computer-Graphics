@@ -7,6 +7,7 @@ void rotate_vector(float* vec, float angle) {
 }
 
 Cycle::Cycle(string file_name) {
+  camera_mode = 2;
   phase = 0;
   // Make the cycle by reading from a file
   string line;
@@ -368,7 +369,6 @@ Cycle::Cycle(string file_name) {
   frame->add_child(rider);
 
   generate_headlight();
-  adjust_headlight();
 }
 
 void Cycle::generate_headlight() {
@@ -403,7 +403,7 @@ void Cycle::rotate(int rx, int ry, int rz) {
   frame->rotate(rx, ry, rz);
 }
 
-void Cycle::pedal_cycle(int angle) {
+void Cycle::pedal_cycle(float angle) {
   phase += angle;
   if (phase >= 360) phase -=360;
   if (phase < 0) phase += 360;
@@ -423,7 +423,8 @@ void Cycle::pedal_cycle(int angle) {
   frame->translate(cycle_direction[0]*distance, 0, cycle_direction[1]*distance);
   delete[] cycle_direction;
   frame->rotate(0, angle_rotated, 0);
-  adjust_headlight();
+  turn(-1*angle_rotated);
+  use_camera(camera_mode);
 }
 
 void Cycle::move_to(float x, float y, float z) {
@@ -431,18 +432,34 @@ void Cycle::move_to(float x, float y, float z) {
   
 }
 
-void Cycle::turn(int angle) {
+void Cycle::turn(float angle) {
   // Turn the cycle with respect to up vector
   handle->rotate(0, angle, 0);
-  adjust_headlight();
+}
+
+void Cycle::use_camera(int mode) {
+  camera_mode = mode;
+  float* cycle_direction = frame->get_direction();
+  if (mode == 0) {
+    // first person
+    glLoadIdentity();
+    gluLookAt(frame->center[0], frame->center[1] + frame->height*2.5, 0.1+frame->center[2],
+    frame->center[0] + cycle_direction[0]*frame->front_len, frame->center[1] + frame->height, frame->center[2] + cycle_direction[1]*frame->front_len,      // center is at (0,0,0)
+    0.0, 1.0, 0.0);      // up is in positive Y direction
+  } else if (mode == 1) {
+
+  } else {
+    // do nothing
+  }
+  delete[] cycle_direction;
 }
 
 Room::Room(string file_name) {
   room = new BaseObject();
   int detail = 100;
-  float room_height = 4;
-  float room_width = 8;
-  float room_depth = 8;
+  room_height = 4;
+  room_width = 8;
+  room_depth = 8;
   float position = -0.57;
 
   float surface_color[4] = {1, 1, 1, 1};
@@ -503,8 +520,38 @@ Room::Room(string file_name) {
   front_wall = new Surface(front_pos, surface_color, front_width, front_height, detail);
   room->add_child(front_wall);
 
+  generate_light();
+
 }
 
 void Room::render() {
   room->render_tree();
+}
+
+void Room::use_camera() {
+  glLoadIdentity();
+  gluLookAt(0.0, 0.7*room_height, -1*room_depth/2,  // eye is at (0,0,5)
+  0.0, 0.0, 0.0,      // center is at (0,0,0)
+  0.0, 1.0, 0.0);      // up is in positive Y direction
+}
+
+void Room::generate_light() {
+  GLfloat spotlight_cutoff[] = { 180.0 };
+  GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+  //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+  glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);
+
+  glEnable(GL_LIGHT0);
+}
+
+void Room::adjust_light() {
+  GLfloat light_position[] = { 0.0, 2.0, 0.0, 1.0 };
+  GLfloat spotlight_direction[] = { 0.0, -1.0, 1.0, 1.0 };
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);
 }

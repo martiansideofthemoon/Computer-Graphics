@@ -13,6 +13,13 @@ int curr=0; //Index of current oprational node
 //Our function for processing ASCII keys
 void processNormalKeys(unsigned char key, int x, int y) {
   switch(key) {
+    case '1':
+      cycle->use_camera(0);
+      break;
+    case '3':
+      room->use_camera();
+      cycle->use_camera(2);
+      break;
     case 'a':
     case 'A':
       cycle->rotate(0, 1, 0);
@@ -83,6 +90,8 @@ void display(void)
    glClearColor (0.0, 0.0, 0.0, 0.0);
 
   //glClearColor(0,0,0,1);
+  cycle->adjust_headlight();
+  room->adjust_light();
   cycle->render();
   room->render();
   glutSwapBuffers();
@@ -105,24 +114,9 @@ void init(void)
 
   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat mat_shininess[] = { 50.0 };
-  GLfloat spotlight_cutoff[] = { 180.0 };
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-  GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-  GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
-  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat light_position[] = { 0.0, 2.0, 0.0, 1.0 };
-  GLfloat spotlight_direction[] = { 0.0, -1.0, 0.0, 1.0 };
-
-  //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-  glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);
-  glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);
-
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHTING);
 }
 
 int main(int argc, char **argv)

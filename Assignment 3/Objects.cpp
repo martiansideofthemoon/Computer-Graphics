@@ -839,7 +839,11 @@ Surface::Surface(float surface_position[][4], float surface_color[4], float widt
 void Surface::render() {
   glTranslatef(center[0], center[1], center[2]);
   float rotation_angle = acos(normal[2])*180.0/PI;
-  glRotatef(rotation_angle, -1*normal[1], normal[0], 0);
+  if (normal[0] == 0 && normal[1] == 0 && normal[2] < 0) {
+    glRotatef(180, 1, 0, 0);
+  } else {
+    glRotatef(rotation_angle, -1*normal[1], normal[0], 0);
+  }
 
   // rendering the tires
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, surface_color);
@@ -850,7 +854,7 @@ void Surface::render() {
     glBegin(GL_QUADS);
     for (int j = 0; j < detail; j++) {
       for (int i = 0; i < detail; i++) {
-        glNormal3f(0, 0, 1.0);
+        glNormal3f(0, 0, 1);
         glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + j*quad_height, 0);
         glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + j*quad_height, 0);
         glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + (j+1)*quad_height, 0);
