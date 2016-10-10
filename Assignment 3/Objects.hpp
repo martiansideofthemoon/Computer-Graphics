@@ -10,7 +10,7 @@ using namespace std;
 #define _OBJECTS_HPP_
 
 void vertexcopy(float *src,float *dest);
-GLuint LoadTexture(const char * filename, int width, int height);
+GLuint LoadTexture(const char * filename);
 
 // A simple class that represents a node in the hierarchy tree
 class BaseObject {
@@ -179,10 +179,14 @@ private:
   float width;
   float height;
   int detail; // An integer value from 1
+  bool has_texture;
+  float* texture_position; // Give with respect to detail
+  string texture_file;
 public:
   Surface(float surface_position[][4], float surface_color[4], float width, float height, int detail);
   void render();
   void rotate(float rotate_x, float rotate_y, float rotate_z);
+  void map_texture(string texture_file, float texture_position[4]);
 };
 
 #endif

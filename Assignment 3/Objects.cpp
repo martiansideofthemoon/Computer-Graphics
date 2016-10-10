@@ -819,6 +819,9 @@ void Rider::bend_leg(int pedal_angle, float pedal_shaft) {
 
 // Functions of the Surface Class
 Surface::Surface(float surface_position[][4], float surface_color[4], float width, float height, int detail) {
+  has_texture = false;
+  texture_file = "";
+  texture_position = new float[4];
   this->center = new float[4];
   vertexcopy(surface_position[0], this->center);
   this->normal = new float[4];
@@ -850,29 +853,36 @@ void Surface::render() {
   //glColor3fv(surface_color);
   float quad_width = width / detail;
   float quad_height = height / detail;
-  if (normal[1] == 1) {
-    glEnable(GL_TEXTURE_2D);
-  }
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  GLuint texture = LoadTexture("bricks.bmp", 256, 256);
 
+  if (has_texture) {
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    GLuint texture = LoadTexture(texture_file.c_str());
+  }
+  float texture_width = texture_position[1] - texture_position[0];
+  float texture_height = texture_position[3] - texture_position[2];
   glPushMatrix();
-    glBegin(GL_QUADS);
     for (int j = 0; j < detail; j++) {
       for (int i = 0; i < detail; i++) {
-        glNormal3f(0, 0, 1);
-        glTexCoord2f(1.0*i/detail, 1.0*j/detail);
-        glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + j*quad_height, 0);
-        glTexCoord2f(1.0*(i+1)/detail, 1.0*j/detail);
-        glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + j*quad_height, 0);
-        glTexCoord2f(1.0*(i+1)/detail, 1.0*(j+1)/detail);
-        glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + (j+1)*quad_height, 0);
-        glTexCoord2f(1.0*i/detail, 1.0*(j+1)/detail);
-        glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + (j+1)*quad_height, 0);
+        if (i >= texture_position[0] && i <= texture_position[1] &&
+            j >= texture_position[2] && j <= texture_position[3] &&
+            has_texture == true) {
+          glEnable(GL_TEXTURE_2D);
+        } else {
+          glDisable(GL_TEXTURE_2D);
+        }
+        glBegin(GL_QUADS);
+          glNormal3f(0, 0, 1);
+          glTexCoord2f((i - texture_position[0])/texture_width, (j - texture_position[2])/texture_height);
+          glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + j*quad_height, 0);
+          glTexCoord2f((i+1 - texture_position[0])/texture_width, (j - texture_position[2])/texture_height);
+          glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + j*quad_height, 0);
+          glTexCoord2f((i+1 - texture_position[0])/texture_width, (j+1 - texture_position[2])/texture_height);
+          glVertex3f(-1*width/2 + (i+1)*quad_width, -1*height/2 + (j+1)*quad_height, 0);
+          glTexCoord2f((i - texture_position[0])/texture_width, (j+1 - texture_position[2])/texture_height);
+          glVertex3f(-1*width/2 + i*quad_width, -1*height/2 + (j+1)*quad_height, 0);
+        glEnd();
       }
     }
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
   glPopMatrix();
 
 }
@@ -881,7 +891,16 @@ void Surface::rotate(float rotate_x, float rotate_y, float rotate_z) {
   // Can't be rotated independently
 }
 
-GLuint LoadTexture(const char * filename, int width, int height)
+void Surface::map_texture(string texture_file, float texture_position[4]) {
+  has_texture = true;
+  this->texture_file = texture_file;
+  this->texture_position[0] = texture_position[0]*detail;
+  this->texture_position[1] = texture_position[1]*detail;
+  this->texture_position[2] = texture_position[2]*detail;
+  this->texture_position[3] = texture_position[3]*detail;
+}
+
+GLuint LoadTexture(const char * filename)
 {
     GLuint texture;
     unsigned char header[54];// 54 Byte header of BMP
@@ -903,7 +922,6 @@ GLuint LoadTexture(const char * filename, int width, int height)
     size = *(int*)&(header[0x22]);
     w = *(int*)&(header[0x12]);
     h = *(int*)&(header[0x16]);
-
     //Just in case metadata is missing
     if(size == 0)
       size = w*h*3;
@@ -925,7 +943,7 @@ GLuint LoadTexture(const char * filename, int width, int height)
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 
     free( data );
     return texture;// return the texture id

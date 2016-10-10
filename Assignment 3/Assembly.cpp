@@ -476,8 +476,10 @@ Room::Room(string file_name) {
   float bottom_width = room_width;
   float bottom_height = room_depth;
   int bottom_detail = 200;
-  bottom = new Surface(floor_pos, floor_color, bottom_width, bottom_height, detail);
+  bottom = new Surface(floor_pos, surface_color, bottom_width, bottom_height, detail);
   room->add_child(bottom);
+  float tex_pos0[4] = {0, 1, 0, 1};
+  bottom->map_texture("wood.bmp", tex_pos0);
 
   float ceil_pos[2][4] = {
     {0, room_height + position, 0, 1},
@@ -514,6 +516,8 @@ Room::Room(string file_name) {
   float back_height = room_height;
   back_wall = new Surface(back_pos, surface_color, back_width, back_height, detail);
   room->add_child(back_wall);
+  float tex_pos[4] = {0.3, 0.7, 0.1, 0.9};
+  back_wall->map_texture("mona.bmp", tex_pos);
 
   float front_pos[2][4] = {
     {0, room_height/2 + position, room_depth/2, 1},
