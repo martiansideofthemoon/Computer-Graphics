@@ -514,7 +514,7 @@ void Handle::render() {
     gluCylinder(quadratic, l_frame_thick/2, l_frame_thick*1.2, handle_offset/2, 32, 32 );
     glPopMatrix();
 
-    gluQuadricOrientation(quadratic, GLU_OUTSIDE);
+    //gluQuadricOrientation(quadratic, GLU_OUTSIDE);
     //vertical pipe
     glPushMatrix();
     glRotatef(90, 1.0, 0.0, 0.0);
@@ -625,7 +625,6 @@ void Seat::render() {
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, seat_color);
     //glColor3fv(seat_color);
     glTranslatef(center[0],center[1],center[2]);
-
     float seat_end = -seat_length;
     glPushMatrix();
     glTranslatef(-seat_length/2,0,0);
@@ -884,7 +883,6 @@ void Surface::render() {
       }
     }
   glPopMatrix();
-
 }
 
 void Surface::rotate(float rotate_x, float rotate_y, float rotate_z) {
@@ -947,4 +945,55 @@ GLuint LoadTexture(const char * filename)
 
     free( data );
     return texture;// return the texture id
+}
+
+void drawHalfSphere(int scaley, int scalex, GLfloat r) {
+int i, j;
+GLfloat v[scalex*scaley][3];
+    GLUquadricObj *quadratic;
+    quadratic = gluNewQuadric();
+
+for (i=0; i<scalex; ++i) {
+ for (j=0; j<scaley; ++j) {
+    v[i*scaley+j][0]=r*cos(j*2*M_PI/scaley)*cos(i*M_PI/(2*scalex));
+    v[i*scaley+j][1]=r*sin(i*M_PI/(2*scalex));
+    v[i*scaley+j][2]=r*sin(j*2*M_PI/scaley)*cos(i*M_PI/(2*scalex));
+ }
+}
+
+glBegin(GL_QUADS);
+gluQuadricOrientation(quadratic, GLU_INSIDE);
+for (i=0; i<scalex-1; ++i) {
+  for (j=0; j<scaley; ++j) {
+    glVertex3fv(v[i*scaley+j]);
+    glVertex3fv(v[i*scaley+(j+1)%scaley]);
+    glVertex3fv(v[(i+1)*scaley+(j+1)%scaley]);
+    glVertex3fv(v[(i+1)*scaley+j]);
+  }
+}
+gluQuadricOrientation(quadratic, GLU_OUTSIDE);
+glEnd();
+}
+
+Lamp::Lamp(float position[4], float color[4], float radius) {
+  this->position = new float[4];
+  vertexcopy(position, this->position);
+
+  this->radius = radius;
+  this->color = new float[4];
+  vertexcopy(color, this->color);
+}
+
+void Lamp::render()
+{
+    GLUquadricObj *quadratic;
+    quadratic = gluNewQuadric();
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+    glPushMatrix();
+    glTranslatef(position[0],position[1],position[2]);
+    drawHalfSphere(25.0,25.0,radius);
+    glPopMatrix();
+}
+void Lamp::rotate(float rotate_x, float rotate_y, float rotate_z) {
+  // Can't be rotated independently
 }

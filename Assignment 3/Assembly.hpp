@@ -38,6 +38,7 @@ private:
   float room_width;
   float room_depth;
   BaseObject* room;
+  Lamp* lamp;
   Surface* bottom;
   Surface* left_wall;
   Surface* right_wall;

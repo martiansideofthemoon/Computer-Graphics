@@ -114,6 +114,8 @@ Cycle::Cycle(string file_name) {
   // Constructing the pedal
   pedal = new Pedal(rel_position, pedal_colors, pedal_width, pedal_length, 2*cycle_width);
   frame->add_child(pedal);
+  //   float tex_pos10[4] = {0, 1, 0, 1};
+  // frame->map_texture("silver.bmp", tex_pos10);
 
   // Gear Parameters
   getline(myfile, line);
@@ -507,6 +509,8 @@ Room::Room(string file_name) {
   float right_height = room_height;
   right_wall = new Surface(right_pos, surface_color, right_width, right_height, detail);
   room->add_child(right_wall);
+  float tex_pos1[4] = {0.4, 0.6, 0.3, 0.7};
+  right_wall->map_texture("wall.bmp", tex_pos1);
 
   float back_pos[2][4] = {
     {0, room_height/2 + position, -1*room_depth/2, 1},
@@ -516,8 +520,8 @@ Room::Room(string file_name) {
   float back_height = room_height;
   back_wall = new Surface(back_pos, surface_color, back_width, back_height, detail);
   room->add_child(back_wall);
-  float tex_pos[4] = {0.3, 0.7, 0.1, 0.9};
-  back_wall->map_texture("mona.bmp", tex_pos);
+  float tex_pos2[4] = {0.3, 0.7, 0.1, 0.9};
+  back_wall->map_texture("mona.bmp", tex_pos2);
 
   float front_pos[2][4] = {
     {0, room_height/2 + position, room_depth/2, 1},
@@ -529,6 +533,13 @@ Room::Room(string file_name) {
   room->add_child(front_wall);
 
   generate_light();
+
+  float lamp_radius = 0.3;
+  float lamp_position[4] = {0.0, 3.43-lamp_radius , 0.0, 1.0};
+  float lamp_color[4] = {0.4, 0.4 , 0.0, 1.0};
+  lamp = new Lamp(lamp_position, lamp_color, lamp_radius);
+  room->add_child(lamp);
+
 
 }
 
@@ -558,7 +569,7 @@ void Room::generate_light() {
 }
 
 void Room::adjust_light() {
-  GLfloat light_position[] = { 0.0, 2.0, 0.0, 1.0 };
+  GLfloat light_position[] = { 0.0, 3.0 , 0.7, 1.0 };
   GLfloat spotlight_direction[] = { 0.0, -1.0, 1.0, 1.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotlight_direction);

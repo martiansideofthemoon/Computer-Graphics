@@ -189,4 +189,15 @@ public:
   void map_texture(string texture_file, float texture_position[4]);
 };
 
+class Lamp: public BaseObject {
+private:
+  float radius;
+  float* position;
+  float* color;
+public:
+  Lamp(float position[4], float color[4], float radius);
+  void render();
+  void rotate(float rotate_x, float rotate_y, float rotate_z);
+};
+
 #endif
