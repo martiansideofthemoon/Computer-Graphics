@@ -425,7 +425,7 @@ void Cycle::pedal_cycle(float angle) {
   frame->translate(cycle_direction[0]*distance, 0, cycle_direction[1]*distance);
   delete[] cycle_direction;
   frame->rotate(0, angle_rotated, 0);
-  turn(-1*angle_rotated);
+  //turn(-1*angle_rotated);
   use_camera(camera_mode);
 }
 
