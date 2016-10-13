@@ -1,6 +1,6 @@
 ## 3D Cycle!
 
-Here is a short blogpost on the project - [http://martiansideofthemoon.github.io/2016/09/28/opengl-cycle.html](http://martiansideofthemoon.github.io/2016/09/28/opengl-cycle.html).
+Here is a short blogpost on the project - .
 
 Compile by typing `make` and run by typing `./draw`.
 
@@ -8,6 +8,8 @@ Compile by typing `make` and run by typing `./draw`.
 * Press *DOWN* to cycle backwards.
 * Press *LEFT* to turn the handle left.
 * Press *RIGHT* to turn handle right.
-* Press *W* / *S* to rotate in X direction.
-* Press *A* / *D* to rotate in Y direction.
-* Press *PAGE_UP* / *PAGE_DOWN* to rotate in Z direction.
+* Press *1* for a first person view.
+* Press *2* for a third person view.
+* Press *3* for a fixed camera view.
+* Press *L* to turn on room lights.
+* Press *H* to turn on headlights.
