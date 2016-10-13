@@ -369,6 +369,13 @@ void Frame::render() {
     glRotatef(-90, 1.0f, 0.0f, 0.0f);
     gluCylinder(quadratic, thickness/2, thickness/2, height, 32, 32);
   glPopMatrix();
+
+  float color_plain[] = {1, 1, 1};
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color_plain);
+  gluQuadricTexture(quadratic, GL_TRUE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  GLuint texture = LoadTexture("grad.bmp");
+  glEnable(GL_TEXTURE_2D);
   glPushMatrix();
     glRotatef(-1*atan(height/front_len)*180/PI,0,0,1);
     glRotatef(-90, 0.0f, 1.0f, 0.0f);
@@ -380,6 +387,11 @@ void Frame::render() {
     glRotatef(-90, 0.0f, 1.0f, 0.0f);
     gluCylinder(quadratic, thickness/2, thickness/2, front_len, 32, 32);
   glPopMatrix();
+  glDisable(GL_TEXTURE_2D);
+  gluQuadricTexture(quadratic, GL_FALSE);
+
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, frame_color);
+
   glPushMatrix();
     glTranslatef(0, 0, cycle_width/2);
     glTranslatef(0, height, 0);

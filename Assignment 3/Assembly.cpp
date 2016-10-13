@@ -421,7 +421,6 @@ void Cycle::pedal_cycle(float angle) {
   float handle_angle = handle->get_angle();
   float* cycle_direction = frame->get_direction();
   float angle_rotated = handle_angle - (180.0/PI)*asin(sin(handle_angle*PI/180.0)*(length - distance) / length);
-
   frame->translate(cycle_direction[0]*distance, 0, cycle_direction[1]*distance);
   delete[] cycle_direction;
   frame->rotate(0, angle_rotated, 0);
@@ -436,7 +435,11 @@ void Cycle::move_to(float x, float y, float z) {
 
 void Cycle::turn(float angle) {
   // Turn the cycle with respect to up vector
-  handle->rotate(0, angle, 0);
+  if (handle->get_angle() + angle > 80 || handle->get_angle() + angle < -80) {
+    // Don't turn the handle
+  } else {
+    handle->rotate(0, angle, 0);
+  }
 }
 
 void Cycle::use_camera(int mode) {
@@ -462,7 +465,7 @@ void Cycle::use_camera(int mode) {
 
 Room::Room(string file_name) {
   room = new BaseObject();
-  int detail = 100;
+  int detail = 50;
   room_height = 4;
   room_width = 8;
   room_depth = 8;
@@ -510,7 +513,7 @@ Room::Room(string file_name) {
   right_wall = new Surface(right_pos, surface_color, right_width, right_height, detail);
   room->add_child(right_wall);
   float tex_pos1[4] = {0.4, 0.6, 0.3, 0.7};
-  right_wall->map_texture("wall.bmp", tex_pos1);
+  //right_wall->map_texture("wall.bmp", tex_pos1);
 
   float back_pos[2][4] = {
     {0, room_height/2 + position, -1*room_depth/2, 1},
@@ -557,7 +560,7 @@ void Room::use_camera() {
 void Room::generate_light() {
   GLfloat spotlight_cutoff[] = { 180.0 };
   GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-  GLfloat light_diffuse[] = { 1, 1, 1, 1.0 };
+  GLfloat light_diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
   GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
   //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
