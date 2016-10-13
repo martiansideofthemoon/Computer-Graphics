@@ -1,6 +1,6 @@
 ## 3D Cycle!
 
-Here is a short blogpost on the project - .
+Here is a short blogpost on the project - [http://martiansideofthemoon.github.io/2016/10/14/opengl-cycle-room.html](http://martiansideofthemoon.github.io/2016/10/14/opengl-cycle-room.html).
 
 Compile by typing `make` and run by typing `./draw`.
 
