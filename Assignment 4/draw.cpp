@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "Objects.hpp"
-#include "Assembly.hpp"
+#include "Keyframes.hpp"
 
 using namespace std;
 
@@ -53,7 +53,6 @@ void processNormalKeys(unsigned char key, int x, int y) {
       else
         glEnable(GL_LIGHT1);
       break;
-    case 
   }
   if (key == 27)
   exit(0);
