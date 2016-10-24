@@ -8,6 +8,7 @@ using namespace std;
 
 Cycle* cycle;
 Room* room;
+Animate* animation;
 int curr=0; //Index of current oprational node
 
 //Our function for processing ASCII keys
@@ -23,22 +24,6 @@ void processNormalKeys(unsigned char key, int x, int y) {
       room->use_camera();
       cycle->use_camera(2);
       break;
-    case 'a':
-    case 'A':
-      cycle->rotate(0, 1, 0);
-      break;
-    case 'd':
-    case 'D':
-      cycle->rotate(0, -1, 0);
-      break;
-    case 's':
-    case 'S':
-      cycle->rotate(1, 0, 0);
-      break;
-    case 'w':
-    case 'W':
-      cycle->rotate(-1, 0, 0);
-      break;
     case 'l':
     case 'L':
       if (glIsEnabled(GL_LIGHT0))
@@ -52,6 +37,10 @@ void processNormalKeys(unsigned char key, int x, int y) {
         glDisable(GL_LIGHT1);
       else
         glEnable(GL_LIGHT1);
+      break;
+    case 's':
+    case 'S':
+      animation->add_frame();
       break;
   }
   if (key == 27)
@@ -135,6 +124,7 @@ int main(int argc, char **argv)
   cycle = new Cycle("cycle.txt");
   cycle->turn(30);
   room = new Room("room.txt");
+  animation = new Animate(cycle, room);
   glutMainLoop();
   return 0;
 }

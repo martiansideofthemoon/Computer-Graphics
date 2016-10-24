@@ -463,6 +463,20 @@ void Cycle::use_camera(int mode) {
   delete[] cycle_direction;
 }
 
+float Cycle::get_handle_angle() {
+  return handle->get_angle();
+}
+
+float* Cycle::get_direction() {
+  return frame->get_direction();
+}
+
+float* Cycle::get_center() {
+  return frame->center;
+}
+
+
+
 Room::Room(string file_name) {
   room = new BaseObject();
   int detail = 50;

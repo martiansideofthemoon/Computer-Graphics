@@ -6,7 +6,6 @@
 // This class is the assembly of a cycle object
 class Cycle {
 private:
-  int phase;
   Frame* frame;
   Wheel* front_wheel;
   Wheel* back_wheel;
@@ -18,8 +17,9 @@ private:
   Brake* brake;
   Seat* seat;
   Rider* rider;
-  int camera_mode;
 public:
+  int camera_mode;
+  int phase;
   Cycle(string file_name);
   void render();
   void pedal_cycle(float angle);
@@ -29,6 +29,9 @@ public:
   void generate_headlight();
   void adjust_headlight();
   void use_camera(int mode);
+  float get_handle_angle();
+  float* get_direction();
+  float* get_center();
 };
 
 // This class is the assembly of the room object

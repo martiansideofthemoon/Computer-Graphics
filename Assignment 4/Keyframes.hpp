@@ -22,11 +22,13 @@ public:
 // This class is used to animate the system
 class Animate {
 private:
+  Cycle* cycle;
+  Room* room;
   vector<Keyframe> keyframes;
 public:
-  Animate();
-  void play_back(Cycle* cycle, Room* room);
+  Animate(Cycle* cycle, Room* room);
+  void play_back();
   void clear();
-  void add_frame(Cycle* cycle, Room* room);
+  void add_frame();
   void write_keyframes();
 };

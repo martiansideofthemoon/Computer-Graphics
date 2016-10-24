@@ -36,7 +36,7 @@ void Keyframe::from_string(string input) {
   iss >> direction[0] >> direction[1] >> direction[2] >> direction[3];
 }
 
-Animate::Animate() {
+Animate::Animate(Cycle* cycle, Room* room) {
   keyframes.clear();
   string line;
   ifstream myfile("keyframes.txt");
@@ -48,6 +48,8 @@ Animate::Animate() {
     }
     myfile.close();
   }
+  this->cycle = cycle;
+  this->room = room;
 }
 
 void Animate::clear() {
@@ -56,7 +58,7 @@ void Animate::clear() {
   myfile.close();
 }
 
-void write_keyframes() {
+void Animate::write_keyframes() {
   ofstream myfile("keyframes.txt");
   vector<Keyframe>::iterator s1 = keyframes.begin();
   while (s1 != keyframes.end()) {
@@ -66,13 +68,20 @@ void write_keyframes() {
   myfile.close();
 }
 
-void Animate::add_frame(Cycle* cycle, Room* room) {
-  
-  Keyframe *k = new Keyframe();
+void Animate::add_frame() {
+  bool headlight = glIsEnabled(GL_LIGHT1);
+  bool roomlight = glIsEnabled(GL_LIGHT0);
+  int camera_mode = cycle->camera_mode;
+  float handle_angle = cycle->get_handle_angle();
+  float phase = cycle->phase;
+  float* direction = cycle->get_direction();
+  float* center = cycle->get_center();
+  Keyframe *k = new Keyframe(handle_angle, phase, headlight, roomlight,
+                             camera_mode, center, direction);
   keyframes.push_back(*k);
   write_keyframes();
 }
 
-void Animate::play_back(Cycle* cycle, Room* room) {
+void Animate::play_back() {
 
 }
