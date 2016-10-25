@@ -30,13 +30,13 @@ class Wheel: public BaseObject {
 private:
   float* center;
   float* normal;
-  float angle;
   int spokes;
   float tire_width;
   float* tire_color;
   float* spoke_color;
 public:
   float radius;
+  float angle;
   Wheel(float wheel_position[][4], float wheel_colors[][4], int spokes, float radius, float tire_width);
   void render();
   void rotate(float rotate_x, float rotate_y, float rotate_z);
@@ -46,7 +46,6 @@ class Pedal: public BaseObject {
 private:
   float* center;
   float* normal;
-  float angle;
   float width;
   float pedal_separation;
   float pedal_height;
@@ -54,6 +53,7 @@ private:
   float* shaft_color;
 public:
   float length;
+  float angle;
   Pedal(float pedal_position[][4],
         float pedal_colors[][4],
         float width,
@@ -67,13 +67,13 @@ class Chain: public BaseObject {
 private:
   float* center;
   float* normal;
-  float angle;
   float radius;
   float length;
   float* chain_color;
   float segment_radius;
   float thickness;
 public:
+  float angle;
   Chain(float chain_position[][4], float chain_color[4], float radius, float segment_radius, float length);
   void render();
   void rotate(float rotate_x, float rotate_y, float rotate_z);
@@ -100,6 +100,8 @@ public:
   void rotate(float rotate_x, float rotate_y, float rotate_z);
   void translate(float x, float y, float z);
   float* get_direction();
+  void move_to(float x, float y, float z);
+  void set_direction(float x, float y, float z);
 };
 
 class Handle: public BaseObject {
@@ -120,7 +122,8 @@ public:
   Handle(float* Handle_center, float handle_colors[][4], float handle_dimension[8]);
   void render();
   void rotate(float rotate_x, float rotate_y, float rotate_z);
-  int get_angle();
+  float get_angle();
+  void set_angle(float angle);
 };
 
 class Brake: public BaseObject {

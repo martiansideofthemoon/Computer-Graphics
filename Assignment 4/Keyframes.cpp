@@ -21,8 +21,8 @@ Keyframe::Keyframe(float handle_angle, float cycle_phase, bool headlight,
 string Keyframe::to_string() {
   stringstream ss;
   ss << handle_angle << " " << cycle_phase << " " << headlight << " " << roomlight;
-  ss << " " << camera_mode << center[0] << " " << center[1] << " " << center[2] << " ";
-  ss << center[3] << " " << direction[0] << " " << direction[1] << " " << direction[2] << " ";
+  ss << " " << camera_mode << " " << center[0] << " " << center[1] << " " << center[2] << " ";
+  ss << center[3] << " " << direction[0] << " " << 0 << " " << direction[1] << " ";
   ss << direction[3];
   return ss.str();
 }
@@ -50,6 +50,7 @@ Animate::Animate(Cycle* cycle, Room* room) {
   }
   this->cycle = cycle;
   this->room = room;
+  current_frame = 0;
 }
 
 void Animate::clear() {
@@ -82,6 +83,35 @@ void Animate::add_frame() {
   write_keyframes();
 }
 
-void Animate::play_back() {
+bool Animate::play_next() {
+  if (current_frame < keyframes.size()) {
+    build_scene(&keyframes[current_frame]);
+    glutPostRedisplay();
+    current_frame++;
+    return true;
+  } else {
+    current_frame = 0;
+    return false;
+  }
+}
 
+void Animate::build_scene(Keyframe* frame) {
+  cycle->move_to(frame->center[0], frame->center[1], frame->center[2]);
+  cycle->set_direction(frame->direction[0], frame->direction[1], frame->direction[2]);
+  cycle->set_phase(frame->cycle_phase);
+  cycle->set_handle_angle(frame->handle_angle);
+  if (frame->headlight) {
+    glEnable(GL_LIGHT1);
+  } else {
+    glDisable(GL_LIGHT1);
+  }
+  if (frame->roomlight) {
+    glEnable(GL_LIGHT0);
+  } else {
+    glDisable(GL_LIGHT0);
+  }
+  cycle->use_camera(frame->camera_mode);
+  if (frame->camera_mode == 2) {
+    room->use_camera();
+  }
 }

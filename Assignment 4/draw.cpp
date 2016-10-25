@@ -11,6 +11,8 @@ Room* room;
 Animate* animation;
 int curr=0; //Index of current oprational node
 
+void play_back(int);
+
 //Our function for processing ASCII keys
 void processNormalKeys(unsigned char key, int x, int y) {
   switch(key) {
@@ -42,6 +44,13 @@ void processNormalKeys(unsigned char key, int x, int y) {
     case 'S':
       animation->add_frame();
       break;
+    case 'p':
+    case 'P':
+      play_back(0);
+      break;
+    case 'c':
+    case 'C':
+      animation->clear();
   }
   if (key == 27)
   exit(0);
@@ -89,6 +98,13 @@ void display(void)
   glutSwapBuffers();
 }
 
+void play_back(int) {
+  bool carry_on = animation->play_next();
+  if (carry_on) {
+    glutTimerFunc(50, play_back, 0);
+  }
+}
+
 void init(void)
 {
   // Use depth buffering for hidden surface elimination.
@@ -125,6 +141,8 @@ int main(int argc, char **argv)
   cycle->turn(30);
   room = new Room("room.txt");
   animation = new Animate(cycle, room);
+  room->use_camera();
+  cycle->use_camera(2);
   glutMainLoop();
   return 0;
 }

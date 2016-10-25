@@ -19,7 +19,7 @@ private:
   Rider* rider;
 public:
   int camera_mode;
-  int phase;
+  float phase;
   Cycle(string file_name);
   void render();
   void pedal_cycle(float angle);
@@ -30,7 +30,10 @@ public:
   void adjust_headlight();
   void use_camera(int mode);
   float get_handle_angle();
+  void set_handle_angle(float angle);
+  void set_phase(float angle);
   float* get_direction();
+  void set_direction(float x, float y, float z);
   float* get_center();
 };
 

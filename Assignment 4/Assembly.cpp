@@ -430,7 +430,11 @@ void Cycle::pedal_cycle(float angle) {
 
 void Cycle::move_to(float x, float y, float z) {
   // Move cycle to specific point
-  
+  frame->move_to(x, y, z);
+}
+
+void Cycle::set_direction(float x, float y, float z) {
+  frame->set_direction(x, y, z);
 }
 
 void Cycle::turn(float angle) {
@@ -465,6 +469,20 @@ void Cycle::use_camera(int mode) {
 
 float Cycle::get_handle_angle() {
   return handle->get_angle();
+}
+
+void Cycle::set_handle_angle(float angle) {
+  handle->set_angle(angle);
+}
+
+void Cycle::set_phase(float angle) {
+  pedal->angle = angle;
+  chain->angle = angle;
+  back_gear->angle = angle;
+  front_wheel->angle = angle;
+  back_wheel->angle = angle;
+  rider->bend_leg(phase, pedal->length);
+  phase = angle;
 }
 
 float* Cycle::get_direction() {
