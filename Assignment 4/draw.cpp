@@ -9,6 +9,7 @@ using namespace std;
 Cycle* cycle;
 Room* room;
 Animate* animation;
+bool is_recording = false;
 int curr=0; //Index of current oprational node
 
 void play_back(int);
@@ -42,7 +43,9 @@ void processNormalKeys(unsigned char key, int x, int y) {
       break;
     case 's':
     case 'S':
-      animation->add_frame();
+      if (is_recording) {
+        animation->add_frame();
+      }
       break;
     case 'p':
     case 'P':
@@ -50,7 +53,14 @@ void processNormalKeys(unsigned char key, int x, int y) {
       break;
     case 'c':
     case 'C':
-      animation->clear();
+      if (is_recording) {
+        animation->clear();
+      }
+      break;
+    case 'r':
+    case 'R':
+      is_recording = !is_recording;
+      break;
   }
   if (key == 27)
   exit(0);
