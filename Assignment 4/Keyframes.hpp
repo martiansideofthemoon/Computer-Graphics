@@ -23,13 +23,16 @@ class Animate {
 private:
   Cycle* cycle;
   Room* room;
-  vector<Keyframe> keyframes;
+  int current_keyframe;
+  int fps;
   int current_frame;
 public:
-  Animate(Cycle* cycle, Room* room);
+  vector<Keyframe> keyframes;
+  Animate(Cycle* cycle, Room* room, int fps);
   bool play_next();
   void clear();
   void add_frame();
   void write_keyframes();
   void build_scene(Keyframe* frame);
+  Keyframe* interpolate();
 };

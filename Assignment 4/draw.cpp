@@ -11,7 +11,7 @@ Room* room;
 Animate* animation;
 bool is_recording = false;
 int curr=0; //Index of current oprational node
-
+int fps = 30;
 void play_back(int);
 
 //Our function for processing ASCII keys
@@ -111,7 +111,7 @@ void display(void)
 void play_back(int) {
   bool carry_on = animation->play_next();
   if (carry_on) {
-    glutTimerFunc(50, play_back, 0);
+    glutTimerFunc(1000/fps, play_back, 0);
   }
 }
 
@@ -150,7 +150,7 @@ int main(int argc, char **argv)
   cycle = new Cycle("cycle.txt");
   cycle->turn(30);
   room = new Room("room.txt");
-  animation = new Animate(cycle, room);
+  animation = new Animate(cycle, room, fps);
   room->use_camera();
   cycle->use_camera(2);
   glutMainLoop();

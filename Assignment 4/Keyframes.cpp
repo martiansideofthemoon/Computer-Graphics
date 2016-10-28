@@ -22,7 +22,7 @@ string Keyframe::to_string() {
   stringstream ss;
   ss << handle_angle << " " << cycle_phase << " " << headlight << " " << roomlight;
   ss << " " << camera_mode << " " << center[0] << " " << center[1] << " " << center[2] << " ";
-  ss << center[3] << " " << direction[0] << " " << 0 << " " << direction[1] << " ";
+  ss << center[3] << " " << direction[0] << " " << direction[1] << " " << direction[2] << " ";
   ss << direction[3];
   return ss.str();
 }
@@ -36,7 +36,7 @@ void Keyframe::from_string(string input) {
   iss >> direction[0] >> direction[1] >> direction[2] >> direction[3];
 }
 
-Animate::Animate(Cycle* cycle, Room* room) {
+Animate::Animate(Cycle* cycle, Room* room, int fps) {
   keyframes.clear();
   string line;
   ifstream myfile("keyframes.txt");
@@ -50,7 +50,9 @@ Animate::Animate(Cycle* cycle, Room* room) {
   }
   this->cycle = cycle;
   this->room = room;
+  current_keyframe = 0;
   current_frame = 0;
+  this->fps = fps;
 }
 
 void Animate::clear() {
@@ -75,7 +77,12 @@ void Animate::add_frame() {
   int camera_mode = cycle->camera_mode;
   float handle_angle = cycle->get_handle_angle();
   float phase = cycle->phase;
-  float* direction = cycle->get_direction();
+  float* direction_2D = cycle->get_direction();
+  float* direction = new float[4];
+  direction[0] = direction_2D[0];
+  direction[1] = 0;
+  direction[2] = direction_2D[1];
+  direction[3] = 1;
   float* center = cycle->get_center();
   Keyframe *k = new Keyframe(handle_angle, phase, headlight, roomlight,
                              camera_mode, center, direction);
@@ -83,13 +90,73 @@ void Animate::add_frame() {
   write_keyframes();
 }
 
+Keyframe* Animate::interpolate()
+{
+  bool headlight;
+  bool roomlight;
+  int camera_mode;
+  int next_keyframe = current_keyframe + 1;
+  //section formula parameters
+  float ratio1 = current_frame;
+  float ratio2 = fps - current_frame;
+  if (current_frame < fps/2)
+  {
+    headlight = keyframes[current_keyframe].headlight;
+    roomlight = keyframes[current_keyframe].roomlight;
+    camera_mode = keyframes[current_keyframe].camera_mode;
+  }
+  else
+  {
+    headlight = keyframes[next_keyframe].headlight;
+    roomlight = keyframes[next_keyframe].roomlight;
+    camera_mode = keyframes[next_keyframe].camera_mode;
+  }
+  //handle_angle
+  float next_handle_angle = keyframes[next_keyframe].handle_angle;
+  float current_handle_angle = keyframes[current_keyframe].handle_angle;
+  float handle_angle = (ratio1 * next_handle_angle + ratio2 * current_handle_angle)/fps;
+  //cycle_phase
+  float next_cycle_phase = keyframes[next_keyframe].cycle_phase;
+  float current_cycle_phase = keyframes[current_keyframe].cycle_phase;
+  float phase = (ratio1 * next_cycle_phase + ratio2 * current_cycle_phase)/fps;
+  //center
+  float* center_old = keyframes[current_keyframe].center;
+  float* center_new = keyframes[next_keyframe].center;
+  float center[4];
+  center[0] = (ratio1 * center_new[0] + ratio2 * center_old[0])/fps;
+  center[1] = (ratio1 * center_new[1] + ratio2 * center_old[1])/fps;
+  center[2] = (ratio1 * center_new[2] + ratio2 * center_old[2])/fps;
+  center[3] = (ratio1 * center_new[3] + ratio2 * center_old[3])/fps;
+  //direction
+  float* direction_old = keyframes[current_keyframe].direction;
+  float* direction_new = keyframes[next_keyframe].direction;
+  float direction[4];
+  direction[0] = (ratio1 * direction_new[0] + ratio2 * direction_old[0])/fps;
+  direction[1] = (ratio1 * direction_new[1] + ratio2 * direction_old[1])/fps;
+  direction[2] = (ratio1 * direction_new[2] + ratio2 * direction_old[2])/fps;
+  direction[3] = (ratio1 * direction_new[3] + ratio2 * direction_old[3])/fps;
+  Keyframe *k = new Keyframe(handle_angle, phase, headlight, roomlight,
+                             camera_mode, center, direction);
+  return k;
+}
+
 bool Animate::play_next() {
-  if (current_frame < keyframes.size()) {
-    build_scene(&keyframes[current_frame]);
-    glutPostRedisplay();
-    current_frame++;
+  if (current_keyframe < keyframes.size()-1) {
+    if (current_frame < fps)
+    {
+      build_scene(interpolate());
+      glutPostRedisplay();
+      current_frame++;
+      return true;
+    }
+    else
+    {
+    current_keyframe++;
+    current_frame = 0;
     return true;
+    }
   } else {
+    current_keyframe = 0;
     current_frame = 0;
     return false;
   }
