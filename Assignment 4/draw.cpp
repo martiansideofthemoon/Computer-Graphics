@@ -11,7 +11,7 @@ Room* room;
 Animate* animation;
 bool is_recording = false;
 int curr=0; //Index of current oprational node
-int fps = 30;
+int fps = 24;
 void play_back(int);
 
 //Our function for processing ASCII keys

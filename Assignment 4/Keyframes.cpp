@@ -118,7 +118,11 @@ Keyframe* Animate::interpolate()
   //cycle_phase
   float next_cycle_phase = keyframes[next_keyframe].cycle_phase;
   float current_cycle_phase = keyframes[current_keyframe].cycle_phase;
-  float phase = (ratio1 * next_cycle_phase + ratio2 * current_cycle_phase)/fps;
+  if (next_cycle_phase < current_cycle_phase )
+  {
+    next_cycle_phase = next_cycle_phase + 360;
+  }  float phase = (ratio1 * next_cycle_phase + ratio2 * current_cycle_phase)/fps;
+  //phase = int(phase) % 360;
   //center
   float* center_old = keyframes[current_keyframe].center;
   float* center_new = keyframes[next_keyframe].center;
