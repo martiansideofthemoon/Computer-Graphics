@@ -376,10 +376,10 @@ Cycle::Cycle(string file_name) {
 void Cycle::generate_headlight() {
     // Headlight code -->
   GLfloat spotlight_cutoff[] = { 30.0 };
-  GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
   GLfloat light_diffuse[] = { 1, 1, 0.2, 1.0 };
   GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-  //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
   glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
   glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, spotlight_cutoff);
@@ -595,7 +595,7 @@ void Room::generate_light() {
   GLfloat light_diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
   GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
-  //glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
   glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, spotlight_cutoff);

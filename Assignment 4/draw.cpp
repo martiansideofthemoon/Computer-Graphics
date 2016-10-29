@@ -11,7 +11,7 @@ Room* room;
 Animate* animation;
 bool is_recording = false;
 int curr=0; //Index of current oprational node
-int fps = 24;
+int fps = 15;
 void play_back(int);
 
 //Our function for processing ASCII keys
@@ -129,6 +129,8 @@ void init(void)
   0.0, 0.0, 0.0,      // center is at (0,0,0)
   0.0, 1.0, 0.0);      // up is in positive Y direction
   glShadeModel (GL_SMOOTH);
+  GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat mat_shininess[] = { 50.0 };
