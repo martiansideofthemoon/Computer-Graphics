@@ -10,8 +10,10 @@ Cycle* cycle;
 Room* room;
 Animate* animation;
 bool is_recording = false;
+bool make_movie = false;
 int curr=0; //Index of current oprational node
-int fps = 15;
+int fps = 20;
+int frame = 0;
 void play_back(int);
 
 //Our function for processing ASCII keys
@@ -53,14 +55,15 @@ void processNormalKeys(unsigned char key, int x, int y) {
       break;
     case 'c':
     case 'C':
-      if (is_recording) {
-        animation->clear();
-      }
+      animation->clear();
       break;
     case 'r':
     case 'R':
       is_recording = !is_recording;
       break;
+    case 'm':
+    case 'M':
+      make_movie = !make_movie;
   }
   if (key == 27)
   exit(0);
@@ -110,8 +113,31 @@ void display(void)
 
 void play_back(int) {
   bool carry_on = animation->play_next();
+  if (make_movie) {
+    int W = 640;
+    int H = 640;
+    std::stringstream sstm;
+    string pad = "";
+    if (frame < 10) pad = "00";
+    else if (frame < 100) pad = "0";
+    sstm << "screens/screenshot" << pad << frame << ".tga";
+    string filename = sstm.str();
+
+    FILE   *out = fopen(filename.c_str(),"wb");
+    char   *pixel_data = new char[3*W*H];
+    short  TGAhead[] = { 0, 2, 0, 0, 0, 0, W, H, 24 };
+    glReadBuffer(GL_FRONT);
+    glReadPixels(0, 0, W, H, GL_BGR, GL_UNSIGNED_BYTE, pixel_data);
+    fwrite(TGAhead,sizeof(TGAhead),1,out);
+    fwrite(pixel_data, 3*W*H, 1, out);
+    fclose(out);
+    delete[] pixel_data;
+  }
   if (carry_on) {
     glutTimerFunc(1000/fps, play_back, 0);
+    frame++;
+  } else {
+    frame = 0;
   }
 }
 
